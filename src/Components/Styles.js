@@ -1,7 +1,6 @@
 import React from 'react';
 
 export const CustomStyles = (style_name) => {
-    console.log(style_name);
     switch(style_name){
         case 'login_nav_content':
             return {
@@ -13,7 +12,8 @@ export const CustomStyles = (style_name) => {
                 fontSize: 30,
                 fontFamily: 'Galada-Regular',
                 fontStyle:'normal',
-                fontWeight:'normal'
+                fontWeight:'normal',
+                marginTop:20
             }
 
             case 'nav_container':
@@ -27,7 +27,7 @@ export const CustomStyles = (style_name) => {
             return {
                 backgroundColor: '#E5E5E5',
                 padding:15,
-                height:'100%',
+                flex:1,
                 paddingTop:30
 
             }
@@ -49,9 +49,18 @@ export const CustomStyles = (style_name) => {
                     textAlign: 'center',
                     color: '#737A91'
                 }
+            case 'green_text':
+                return{
+                    fontFamily: 'Galano Grotesque',
+                    fontSize: 14,
+                    lineHeight: 19,
+                    textAlign: 'center',
+                    color: '#00921B'
+                }
             case 'section_container':
                 return{
-                    margin: 20
+                    margin: 20,
+                    //flex:1
                 }
             case 'label_text':
                 return{
@@ -60,6 +69,16 @@ export const CustomStyles = (style_name) => {
                     lineHeight: 19,
                     color: '#737A91',
                     marginBottom:5
+                }
+            case 'floating_input_field':
+                return{
+                    borderWidth:2,
+                    borderColor:'#00921B',
+                    padding:10,
+                    fontSize:30,
+                    fontWeight:'bold',
+                    letterSpacing:5,
+                    textAlign:'center'
                 }
             case 'input_field':
                 return{
@@ -90,6 +109,20 @@ export const CustomStyles = (style_name) => {
                     letterSpacing: 0.03,
                     color: '#FFFFFF'
                 }
+                case 'aware_scroll_view':
+                return{
+                      flex:1,
+                    backgroundColor: '#E5E5E5',
+                }
+                case 'image_file':
+                    return {
+                        resizeMode:'contain',
+                    }
+                case 'image_container':
+                    return {
+                        alignItems:'center'
+                        
+                    }
         default:
             return {
 

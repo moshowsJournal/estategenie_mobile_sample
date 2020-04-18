@@ -23,14 +23,43 @@ import {
   DebugInstructions,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-import {HomeComponent} from './src/Components/RootComponent'; 
+import {Login,SignUp,LogoSection,VerificationSuccessful, EnterVerificationPin} from './src/Components/HomeComponent'; 
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {onChageOfInputField} from './src/functions/HomeFunction';
 
 class App extends Component{
     render(){
         return(
-            <HomeComponent />
+            <NavigationContainer>
+                <Stack.Navigator
+                  screenOptions={{
+                    headerTitleAlign:'center',
+                    headerStyle:{
+                    },
+                    headerTitle: props => (<LogoSection />)
+                  }}
+                >
+                      {/* <Stack.Screen 
+                          name="Login"
+                          component={Login}
+                      /> */}
+                      <Stack.Screen 
+                          name="SignUp"
+                          component={SignUp}
+                      /> 
+                      <Stack.Screen
+                        name="VerificationSuccessful"
+                        component={VerificationSuccessful}
+                      />
+                      <Stack.Screen
+                          name="EnterVerificationPin"
+                          component={EnterVerificationPin}
+                      />
+                </Stack.Navigator>
+            </NavigationContainer>
         )
     }
 }
-
+const Stack = createStackNavigator();
 export default App;
