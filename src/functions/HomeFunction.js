@@ -2,19 +2,22 @@ import React from 'react';
 import axios from 'axios';
 
 
-export const processUserRegistration = (userInformation) => {
+export const processPostRequest = async (url,requestData) => {
     /**
      * --url,
      * --data,
      * --token
      * http://127.0.0.1:8000/api/users/resident_register?email=olamilekan_lokoso@gmail.com&firstname=Olaoluwa&surname=Adewale&password=password&phone=08140812969
      */
+    console.log(url);
     try{
-        return axios.post('http://estategenie.ageofbrains.com/api/users/resident_register',userInformation).then(res => {
+        try {
+            const res = await axios.post(url, requestData);
             return res.data.response;
-        }).catch(error => {
+        }
+        catch (error) {
             return error;
-        });
+        }
     }catch(err){
         console(err);
     }

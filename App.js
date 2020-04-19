@@ -40,22 +40,23 @@ class App extends Component{
                     headerTitle: props => (<LogoSection />)
                   }}
                 >
-                      {/* <Stack.Screen 
+                      <Stack.Screen 
                           name="Login"
                           component={Login}
-                      /> */}
+                      />
                       <Stack.Screen 
                           name="SignUp"
                           component={SignUp}
                       /> 
                       <Stack.Screen
-                        name="VerificationSuccessful"
-                        component={VerificationSuccessful}
-                      />
-                      <Stack.Screen
                           name="EnterVerificationPin"
                           component={EnterVerificationPin}
                       />
+                      <Stack.Screen
+                        name="VerificationSuccessful"
+                        component={VerificationSuccessful}
+                      />
+                      
                 </Stack.Navigator>
             </NavigationContainer>
         )

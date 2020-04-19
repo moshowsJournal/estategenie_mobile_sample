@@ -2,7 +2,8 @@ import React,{useState,useReducer} from 'react';
 import {Text, View,TextInput, TouchableOpacity, Button,Image} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {CustomStyles} from './Styles';
-import {processUserRegistration,TextFieldRules} from '../functions/HomeFunction';
+import {processPostRequest,TextFieldRules} from '../functions/HomeFunction';
+import {baseUrl} from './environment_variable';
 
 export const LogoSection = () => (
     <View>
@@ -11,6 +12,9 @@ export const LogoSection = () => (
 )
 
 export const Login = ({navigation}) => {
+    const [email,setEmailAddress] = useState('');
+    const [password,setPassword] = useState('');
+    const [processing,setProcessing] = useState(false);
     return(
         <KeyboardAwareScrollView style={CustomStyles('aware_scroll_view')}>
                     <View style={CustomStyles('body_container')}>
@@ -27,6 +31,7 @@ export const Login = ({navigation}) => {
                                         <TextInput 
                                             placeholder="Enter Email Address"
                                             style={CustomStyles('input_field')}
+                                            onChangeText={(value)=>setEmailAddress(value)}
 
                                         />
                                     </View>
@@ -36,11 +41,46 @@ export const Login = ({navigation}) => {
                                             secureTextEntry={true}
                                             placeholder="Enter Password"
                                             style={CustomStyles('input_field')}
+                                            onChangeText={(value)=>setPassword(value)}
                                         />
                                     </View>
-                                    <TouchableOpacity style={CustomStyles('form_group')}>
+                                    <TouchableOpacity style={CustomStyles('form_group')}
+                                        onPress={()=>{
+                                            let loginDetails = {
+                                                password,
+                                                email
+                                            }
+                                            let emailTest = TextFieldRules('email',email);
+                                            if(emailTest === false){
+                                                alert('Invalid email format');
+                                                setProcessing(false);
+                                                return false;
+                                            }
+                                            setProcessing(true);
+                                            processPostRequest(`${baseUrl}/api/users/login`,loginDetails).then(response =>{
+                                                console.log(response);
+                                                setProcessing(false)
+                                                if(('errors' in response)){
+                                                    alert('Opps! Please all fields are required');
+                                                    setProcessing(false);
+                                                    return false;
+                                                 }
+                                                 if(('message' in response)){
+                                                    alert(response.message);
+                                                    setProcessing(false);
+                                                    if(response.message.includes('Account has not been activated')){
+                                                        navigation.navigate('EnterVerificationPin',{email})
+                                                    }
+                                                     return false;
+                                                 }
+                                            }).catch(error=>{
+                                                setProcessing(false);
+                                            });
+                                        }}
+                                        disabled={processing}
+                                    >
                                             <View style={CustomStyles('submit_button')}>
-                                                <Text style={CustomStyles('submit_button_text')}>Login</Text>
+                                    <Text style={CustomStyles('submit_button_text')}>{processing ? 'Please Wait...' : 'Login'}</Text>
                                             </View>
                                     </TouchableOpacity>
                             </View>
@@ -136,7 +176,7 @@ export const SignUp = ({navigation}) => {
                                         password:password,
                                         phone:phoneNumber
                                     }
-                                    processUserRegistration(userInformation).then(response => {
+                                    processPostRequest(`${baseUrl}/api/users/resident_register`,userInformation).then(response => {
                                         console.log(response);
                                         if(('errors' in response)){
                                            let emailIsTaken =  (response.errors.email !== undefined) && ((response.errors.email.join(' ').includes('The email has already been taken'))) ? true : false;
@@ -152,6 +192,9 @@ export const SignUp = ({navigation}) => {
                                             alert(response.message);
                                             setProcessing(false);
                                             return false;
+                                        }
+                                        if(response.code === 200){
+                                            navigation.navigate('EnterVerificationPin',{email:response.user.email});
                                         }
                                     });
                                 }}
@@ -173,8 +216,12 @@ export const SignUp = ({navigation}) => {
     )
 }
 
-export const EnterVerificationPin = () => (
-    <KeyboardAwareScrollView style={CustomStyles('aware_scroll_view')}>
+export const EnterVerificationPin = ({route,navigation}) => {
+    const [verificationCode,setVerificationCode] = useState('');
+    const [processing,setProcessing] = useState(false);
+    console.log(route.params);
+    return(
+        <KeyboardAwareScrollView style={CustomStyles('aware_scroll_view')}>
         <View style={CustomStyles('body_container')}>
             <View style={CustomStyles('section_container')}>
                 <Text style={CustomStyles('header_text')}>Enter Verification Pin</Text>
@@ -197,19 +244,51 @@ export const EnterVerificationPin = () => (
                         <TextInput 
                             style={CustomStyles('floating_input_field')}
                             keyboardType='numeric'
-                            maxLength={5}
+                            maxLength={6}
+                            onChangeText={(value)=>{setVerificationCode(value)}}
                         />
                 </View>
-                <TouchableOpacity style={CustomStyles('form_group')}>
+                <TouchableOpacity 
+                    style={CustomStyles('form_group')}
+                    onPress={()=>{
+                        setProcessing(true);
+                        let verificationParams = {
+                            activation_code : verificationCode,
+                            email:route.params.email
+                        }
+                        console.log(verificationParams);
+                        processPostRequest(`${baseUrl}/api/users/verify_customer_email`,verificationParams).then(response =>{
+                            console.log(response);
+                            if(('errors' in response)){
+                                alert('Opps! Please enter verification code');
+                                setProcessing(false);
+                                return false;
+                            }
+                            if(('message' in response) && response.code !== 200){
+                                alert(response.message);
+                                setProcessing(false);
+                                return false;
+                            }
+                            if(response.code === 200){
+                                navigation.navigate('VerificationSuccessful');
+                            }
+                        }).catch(error=>{
+                            setProcessing(false);
+                            alert('Opps! Please retry');
+                        })
+                    }}
+                    disabled={processing}
+                >
                         <View style={CustomStyles('submit_button')}>
-                            <Text style={CustomStyles('submit_button_text')}>Verify</Text>
+                <Text style={CustomStyles('submit_button_text')}>{processing ? 'Please Wait...' : 'Verify'}</Text>
                         </View>
                 </TouchableOpacity>
             </View>
         </View>
     </KeyboardAwareScrollView>
+    )   
     
-);
+};
 
 export const VerificationSuccessful = ({navigation}) => (
     <View style={CustomStyles('body_container')}>
@@ -229,7 +308,9 @@ export const VerificationSuccessful = ({navigation}) => (
                         You have successfully verified your account. Log in and continue the good work you already started.</Text>
                     </View>
                     <View style={CustomStyles('section_container')}>
-                        <TouchableOpacity style={CustomStyles('form_group')}>
+                        <TouchableOpacity style={CustomStyles('form_group')}
+                            onPress={()=>navigation.navigate('Login')}
+                        >
                                 <View style={CustomStyles('submit_button')}>
                                     <Text style={CustomStyles('submit_button_text')}>Go to Login</Text>
                                 </View>
