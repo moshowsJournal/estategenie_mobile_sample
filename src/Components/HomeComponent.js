@@ -1,9 +1,18 @@
-import React,{useState,useReducer} from 'react';
-import {Text, View,TextInput, TouchableOpacity, Button,Image} from 'react-native';
+import React,{useState} from 'react';
+import {Text, View,TextInput, Button,Image, TouchableOpacityComponent} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {CustomStyles} from './Styles';
 import {processPostRequest,TextFieldRules} from '../functions/HomeFunction';
 import {baseUrl} from './environment_variable';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {BottomTabNavigation} from './EstateComponent';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+//import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import { NavigationContainer,NavigationActions } from '@react-navigation/native';
+
+import {FindYourEstate,UseEstateCodeNavItem,FindByEstateCode} from './EstateComponent';
 
 export const LogoSection = () => (
     <View>
@@ -83,6 +92,10 @@ export const Login = ({navigation}) => {
                                     <Text style={CustomStyles('submit_button_text')}>{processing ? 'Please Wait...' : 'Login'}</Text>
                                             </View>
                                     </TouchableOpacity>
+                                    <Text
+                                        style={CustomStyles('p_text')}
+                                        onPress={()=>navigation.navigate('ForgotPassword')}
+                                    >Forgot Password ?</Text>
                             </View>
                             <View style={CustomStyles('section_container')}>
                                 <Text
@@ -95,6 +108,299 @@ export const Login = ({navigation}) => {
     )
 }
 
+
+export const PasswordReset = ({navigation}) => {
+    const [email,setEmailAddress] = useState('');
+    const [password,setPassword] = useState('');
+    const [processing,setProcessing] = useState(false);
+    return(
+        <KeyboardAwareScrollView style={CustomStyles('aware_scroll_view')}>
+                    <View style={CustomStyles('body_container')}>
+                            <View style={CustomStyles('section_container')}>
+                                <Text style={CustomStyles('header_text')}> Reset Your Password</Text>
+                            </View>
+                            <View style={CustomStyles('section_container')}>
+                                        <View style={CustomStyles('form_group')}>
+                                            <Text style={CustomStyles('label_text')}>New Password</Text>
+                                            <TextInput 
+                                                placeholder="Enter Password"
+                                                style={CustomStyles('input_field')}
+                                                secureTextEntry={true}
+                                            />
+                                        </View>
+                                        <View style={CustomStyles('form_group')}>
+                                            <Text style={CustomStyles('label_text')}>Confirm Password</Text>
+                                            <TextInput 
+                                                placeholder="Confirm Password"
+                                                style={CustomStyles('input_field')}
+                                                secureTextEntry={true}
+                                            />
+                                        </View>
+                                        <TouchableOpacity style={CustomStyles('form_group')}
+                                            onPress={
+                                                () => navigation.navigate('ConfirmResetPassword')
+                                            }
+                                            
+                                        >
+                                                <View style={CustomStyles('submit_button')}>
+                                        <Text style={CustomStyles('submit_button_text')}>Reset Password</Text>
+                                                </View>
+                                        </TouchableOpacity>
+                                </View>
+                    </View>
+        </KeyboardAwareScrollView>
+    )
+}
+
+
+export const ForgotPassword = ({navigation}) => {
+    const [email,setEmailAddress] = useState('');
+    const [password,setPassword] = useState('');
+    const [processing,setProcessing] = useState(false);
+    return(
+        <KeyboardAwareScrollView style={CustomStyles('aware_scroll_view')}>
+                    <View style={CustomStyles('body_container')}>
+                            <View style={CustomStyles('section_container')}>
+                                <Text style={CustomStyles('header_text')}> Forgot Your Password? </Text>
+                            </View>
+                            {/* <View>
+                                <View style={CustomStyles('section_container')}>
+                                    <Text style={CustomStyles('p_text')}>Enter the email address you used when you joined and we’ll send you instructions to reset your password.</Text>
+                                </View>
+                                <View style={CustomStyles('section_container')}>
+                                        <View style={CustomStyles('form_group')}>
+                                            <Text style={CustomStyles('label_text')}>Email Address</Text>
+                                            <TextInput 
+                                                placeholder="Enter Email Address"
+                                                style={CustomStyles('input_field')}
+                                                keyboardType='email-address'
+                                            />
+                                        </View>
+                                        <TouchableOpacity style={CustomStyles('form_group')}
+                                        
+                                            
+                                        >
+                                                <View style={CustomStyles('submit_button')}>
+                                        <Text style={CustomStyles('submit_button_text')}>Reset Password</Text>
+                                                </View>
+                                        </TouchableOpacity>
+                                </View>
+                            </View> */}
+                            <View>
+                                    <View style={CustomStyles('section_container')}>
+                                        <View style={CustomStyles('green_card')}>
+                                            <Text style={CustomStyles('green_card_text')}>
+                                                We’ve sent password recovery
+                                                instructions to your email address: "thesamuelbello@gmail.com"
+                                            </Text>
+                                        </View>
+                                    </View>
+                            </View>
+                            <View style={CustomStyles('section_container')}>
+                                <Text
+                                        style={CustomStyles('p_text')}
+                                        onPress={()=>navigation.navigate('Login')}
+                                    >Remember your password ? <Text style={CustomStyles('green_text')}> Login Here</Text></Text>
+                            </View>
+                    </View>
+        </KeyboardAwareScrollView>
+    )
+}
+export const NavigatioMenuList = ({navigation}) => {
+    return(
+        <View 
+            style={CustomStyles('navigation_menu_list')}
+        >
+            <View>
+                <Text
+                    style={CustomStyles('navigation_menu_item')}
+                >Bills & Payments</Text>
+                <Text
+                     style={CustomStyles('navigation_menu_item')}
+                >Transactions</Text>
+                <TouchableOpacity
+                    onPress={()=>navigation.navigate('FindYourEstate')}
+                >
+                <Text
+                     style={CustomStyles('navigation_menu_item')}
+                >New Estate Registration</Text>
+                </TouchableOpacity>
+                <Text
+                     style={CustomStyles('navigation_menu_item')}
+                >Add Occupant</Text>
+                <Text
+                     style={CustomStyles('navigation_menu_item')}
+                >Add Domestic Staff</Text>
+                <Text
+                     style={CustomStyles('navigation_menu_item')}
+                >Book Visitor</Text>
+                <Text
+                     style={CustomStyles('navigation_menu_item')}
+                >Register Vehicle</Text>
+                <Text
+                     style={CustomStyles('navigation_menu_item')}
+                >Report Incident</Text>
+            </View>
+        </View>
+    );
+}
+export const NavBarRightMenu = ({navigation}) => {
+    let [showNavMenu,setShowNavMenu] = useState(false)
+    return(
+        <View style={CustomStyles('main_navbar')}>
+            <TouchableOpacity
+               style={CustomStyles('navbar_icons')} 
+            >
+                <Image 
+                        style={CustomStyles('image_file')}
+                        source={require('../assets/images/notifications.png')}
+                    />
+            </TouchableOpacity>
+            <TouchableOpacity
+                onPress={()=> {
+                    setShowNavMenu(!showNavMenu);
+                }}
+                style={CustomStyles('navbar_icons')}
+            >
+                <Image 
+                        style={CustomStyles('image_file')}
+                        source={require('../assets/images/menu.png')}
+                    />
+            </TouchableOpacity>
+            {showNavMenu && <NavigatioMenuList navigation={navigation} />}
+        </View>
+    )
+}
+
+
+export const OverView = ({navigation,route}) => {
+    return(
+        <View style={CustomStyles('main_container_with_bottom_nav')}>
+            <View style={CustomStyles('body_container_with_bottom_nav')}>
+                <View style={CustomStyles('section_container')}>
+                    <Text style={CustomStyles('greeting_text')}>
+                        Good Morning Moshood!
+                    </Text>
+                </View> 
+                <View style={CustomStyles('section_container')}>
+                    <View style={CustomStyles('card_container')}>
+                            <TouchableOpacity
+                                onPress={()=>alert('Hi there!')}
+                                style={CustomStyles('card')}
+                            >
+                                <View style={CustomStyles('card_header')}>
+                                    <Text style={CustomStyles('card_header_text')}>Fixed Services</Text>
+                                </View>
+                                <View style={CustomStyles('card_body')}>
+                                    <Text style={CustomStyles('card_body_text')}>02</Text>
+                                </View>
+                                <View style={CustomStyles('card_footer')}>
+                                    <Text style={CustomStyles('card_footer_text')}>View All ></Text>
+                                </View>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity style={CustomStyles('card')}>
+                                <View style={CustomStyles('card_header')}>
+                                    <Text style={CustomStyles('card_header_text')}>Flexible Services</Text>
+                                </View>
+                                <View style={CustomStyles('card_body')}>
+                                    <Text style={CustomStyles('card_body_text')}>05</Text>
+                                </View>
+                                <View style={CustomStyles('card_footer')}>
+                                    <Text style={CustomStyles('card_footer_text')}>View All ></Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={()=>alert('Hi there!')}
+                                style={CustomStyles('card')}
+                            >
+                                <View style={CustomStyles('card_header')}>
+                                    <Text style={CustomStyles('card_header_text')}>Fixed Services</Text>
+                                </View>
+                                <View style={CustomStyles('card_body')}>
+                                    <Text style={CustomStyles('card_body_text')}>02</Text>
+                                </View>
+                                <View style={CustomStyles('card_footer')}>
+                                    <Text style={CustomStyles('card_footer_text')}>View All ></Text>
+                                </View>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity style={CustomStyles('card')}>
+                                <View style={CustomStyles('card_header')}>
+                                    <Text style={CustomStyles('card_header_text')}>Flexible Services</Text>
+                                </View>
+                                <View style={CustomStyles('card_body')}>
+                                    <Text style={CustomStyles('card_body_text')}>05</Text>
+                                </View>
+                                <View style={CustomStyles('card_footer')}>
+                                    <Text style={CustomStyles('card_footer_text')}>View All ></Text>
+                                </View>
+                            </TouchableOpacity>
+                    </View>
+                </View>
+            </View>
+            <View style={{height:'10%',backgroundColor:'white'}}>
+                <BottomTabNavigation navigation={navigation} route={route}/>
+            </View>
+        </View> 
+    )
+}
+
+// export const BottomTabNavigation = () => {
+//     return(
+//         <Tab.Navigator
+//                 screenOptions={{
+//                     tabStyle:{
+//                         position:'absolute',
+//                         width:'100%'
+//                     }
+//                 }}
+//         >
+//             <Tab.Screen
+//                 name="Overview"
+//                 component={OverView}
+//                 options={{
+//                   tabBarLabel: 'Home',
+//                   tabBarIcon: ({ color, size }) => (
+//                     <MaterialIcons name="apps" color={color} size={size} />
+//                   ),
+//                 }}
+//             />
+//             <Tab.Screen 
+//                 name="Apartments" 
+//                 component={FindYourEstate} 
+//                 options={{
+//                     tabBarLabel:'Apartments',
+//                     tabBarIcon: ({ color, size }) => (
+//                         <MaterialIcons name="domain" color={color} size={size} />
+//                     ),
+//                 }}
+//             />
+//             <Tab.Screen 
+//                 name="Services" 
+//                 component={VerificationSuccessful} 
+//                 options={{
+//                     tabBarLabel:'Service',
+//                     tabBarIcon: ({ color, size }) => (
+//                         <MaterialIcons name="work" color={color} size={size} />
+//                       ),
+//                 }}
+//             />
+//             <Tab.Screen 
+//                 name="Profile" 
+//                 component={VerificationSuccessful} 
+//                 options={{
+//                     tabBarLabel:'Profile',
+//                     tabBarIcon: ({ color, size }) => (
+//                         <MaterialIcons name="person" color={color} size={size} />
+//                       ),
+//                 }}
+//             />
+//         </Tab.Navigator>
+//     )
+// }
+
+const Tab = createBottomTabNavigator();
 export const SignUp = ({navigation}) => {
     const [firstName,setFirstName] = useState('');
     const [emailAddress,setEmailAddress] = useState('');
@@ -219,7 +525,6 @@ export const SignUp = ({navigation}) => {
 export const EnterVerificationPin = ({route,navigation}) => {
     const [verificationCode,setVerificationCode] = useState('');
     const [processing,setProcessing] = useState(false);
-    console.log(route.params);
     return(
         <KeyboardAwareScrollView style={CustomStyles('aware_scroll_view')}>
         <View style={CustomStyles('body_container')}>
@@ -306,6 +611,36 @@ export const VerificationSuccessful = ({navigation}) => (
                     <View style={CustomStyles('section_container')}>
                         <Text style={CustomStyles('p_text')}>
                         You have successfully verified your account. Log in and continue the good work you already started.</Text>
+                    </View>
+                    <View style={CustomStyles('section_container')}>
+                        <TouchableOpacity style={CustomStyles('form_group')}
+                            onPress={()=>navigation.navigate('Login')}
+                        >
+                                <View style={CustomStyles('submit_button')}>
+                                    <Text style={CustomStyles('submit_button_text')}>Go to Login</Text>
+                                </View>
+                        </TouchableOpacity>
+                    </View>
+            </View>
+)
+
+export const ConfirmResetPassword = ({navigation}) => (
+    <View style={CustomStyles('body_container')}>
+                    <View style={CustomStyles('section_container')}>
+                        <Text style={CustomStyles('header_text')}>Password Reset!</Text>
+                    </View>
+                    <View style={CustomStyles('section_container')}>
+                            <View style={CustomStyles('image_container')}>
+                                <Image 
+                                    style={CustomStyles('image_file')}
+                                    source={require('../assets/images/illustration.png')}
+                                />
+                            </View>
+                    </View>
+                    <View style={CustomStyles('section_container')}>
+                        <Text style={CustomStyles('p_text')}>
+                        You have successfully reset your password. Log in and continue the good work you already started.
+                        </Text>
                     </View>
                     <View style={CustomStyles('section_container')}>
                         <TouchableOpacity style={CustomStyles('form_group')}
