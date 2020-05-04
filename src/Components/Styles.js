@@ -174,7 +174,7 @@ export const CustomStyles = (style_name) => {
                 case 'aware_scroll_view':
                 return{
                       flex:1,
-                    backgroundColor: '#E5E5E5',
+                    backgroundColor: '#f9fafa',
                 }
                 case 'image_file':
                     return {

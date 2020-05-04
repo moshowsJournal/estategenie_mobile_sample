@@ -1,13 +1,30 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import {Text,View,TouchableOpacity,TextInput,Picker,Image,Modal} from 'react-native';
+import {get_login_user_information} from './HomeComponent'
 import {CustomStyles} from './Styles';
-
+import {processGetRequestWithToken} from '../functions/HomeFunction';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Button } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
-
+import {baseUrl} from './environment_variable';
 export const FindYourEstate = ({navigation,route}) => {
+    const [estates,setEstate] = useState([]);
+    const [countries,setCountry] = useState([]);
+    const [countryCodes,setCountryCodes] = useState([]);
+    useEffect(()=>{
+        processGetRequestWithToken(`${baseUrl}/api/users/get_all_estates`).then(res =>{
+            setEstate(Object.values(res.estates));
+            setCountryCodes(Object.keys(res.estates));
+        }).catch(err => { 
+            console.log(err);
+        })
+        return () => {
+            console.log('Yes ....')
+        }
+    },[
+        countries
+    ]);
     return(
         <View style={CustomStyles('main_container_with_bottom_nav')}>
             <View style={CustomStyles('body_container_with_bottom_nav')}>
@@ -28,27 +45,31 @@ export const FindYourEstate = ({navigation,route}) => {
                 </View>
 
                 <ScrollView style={CustomStyles('section_container')}>
-                    <Text style={{fontWeight:'bold',fontSize:15}}>Nigeria</Text>
-                    <TouchableOpacity style={CustomStyles('horizontal_card')}
-                        onPress={()=>navigation.navigate('ApartmentsInEstate',{
-                            estate_name : 'Jacob Mews Estate'
-                        })}
-                    >
-                        <Text style={CustomStyles('horizontal_card_header')}>Hill Crest Estate – Multi Street – 7 Buildings</Text>
-                        <Text style={CustomStyles('label_text')}>Plot 65 - 75, Bode Thomas, Surulere, Lagos, Nigeria</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={CustomStyles('horizontal_card')}>
-                        <Text style={CustomStyles('horizontal_card_header')}>Hill Crest Estate – Multi Street – 7 Buildings</Text>
-                        <Text style={CustomStyles('label_text')}>Plot 65 - 75, Bode Thomas, Surulere, Lagos, Nigeria</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={CustomStyles('horizontal_card')}>
-                        <Text style={CustomStyles('horizontal_card_header')}>Hill Crest Estate – Multi Street – 7 Buildings</Text>
-                        <Text style={CustomStyles('label_text')}>Plot 65 - 75, Bode Thomas, Surulere, Lagos, Nigeria</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={CustomStyles('horizontal_card')}>
-                        <Text style={CustomStyles('horizontal_card_header')}>Hill Crest Estate – Multi Street – 7 Buildings</Text>
-                        <Text style={CustomStyles('label_text')}>Plot 65 - 75, Bode Thomas, Surulere, Lagos, Nigeria</Text>
-                    </TouchableOpacity>
+                    {
+                        countryCodes.map((country_code,index) =>{
+                            return(
+                                <View key={index}>
+                                    <Text style={{fontWeight:'bold',fontSize:15}}>{country_code}</Text>
+                                    
+
+                                    {
+                                        estates[index].map((estate,key)=>{
+                                            return(
+                                                <TouchableOpacity style={CustomStyles('horizontal_card')}
+                                                        onPress={()=>navigation.navigate('ApartmentsInEstate',{
+                                                            estate_name : estate.estate_name
+                                                        })}
+                                                    >
+                                                    <Text style={CustomStyles('horizontal_card_header')}>{estate.estate_name}</Text>
+                                                    <Text style={CustomStyles('label_text')}>{estate.estate_address}</Text>
+                                                </TouchableOpacity>
+                                            )
+                                        })
+                                    }
+                                </View>
+                            )
+                        })
+                    }
                 </ScrollView>
 
 

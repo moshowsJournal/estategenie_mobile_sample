@@ -37,6 +37,7 @@ class App extends Component{
         return(
             <NavigationContainer>
                 <Stack.Navigator
+                  
                   screenOptions={{
                     headerTitleAlign:'center',
                     headerStyle:{

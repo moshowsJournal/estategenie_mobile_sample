@@ -1,9 +1,9 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import {Text, View,TextInput, Button,Image, TouchableOpacityComponent} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {CustomStyles} from './Styles';
-import {processPostRequest,TextFieldRules} from '../functions/HomeFunction';
+import {processPostRequest,TextFieldRules,ProcessLoginRequest} from '../functions/HomeFunction';
 import {baseUrl} from './environment_variable';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -11,8 +11,8 @@ import {BottomTabNavigation} from './EstateComponent';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 //import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { NavigationContainer,NavigationActions } from '@react-navigation/native';
-
 import {FindYourEstate,UseEstateCodeNavItem,FindByEstateCode} from './EstateComponent';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export const LogoSection = () => (
     <View>
@@ -66,7 +66,7 @@ export const Login = ({navigation}) => {
                                                 return false;
                                             }
                                             setProcessing(true);
-                                            processPostRequest(`${baseUrl}/api/users/login`,loginDetails).then(response =>{
+                                            ProcessLoginRequest(`${baseUrl}/api/users/login`,loginDetails).then(response =>{
                                                 console.log(response);
                                                 setProcessing(false)
                                                 if(('errors' in response)){
@@ -82,6 +82,7 @@ export const Login = ({navigation}) => {
                                                     }
                                                      return false;
                                                  }
+                                                navigation.navigate('Overview',{firstname:response.user.firstname});
                                             }).catch(error=>{
                                                 setProcessing(false);
                                             });
@@ -163,7 +164,7 @@ export const ForgotPassword = ({navigation}) => {
                             <View style={CustomStyles('section_container')}>
                                 <Text style={CustomStyles('header_text')}> Forgot Your Password? </Text>
                             </View>
-                            {/* <View>
+                            <View>
                                 <View style={CustomStyles('section_container')}>
                                     <Text style={CustomStyles('p_text')}>Enter the email address you used when you joined and we’ll send you instructions to reset your password.</Text>
                                 </View>
@@ -185,8 +186,8 @@ export const ForgotPassword = ({navigation}) => {
                                                 </View>
                                         </TouchableOpacity>
                                 </View>
-                            </View> */}
-                            <View>
+                            </View>
+                            {/* <View>
                                     <View style={CustomStyles('section_container')}>
                                         <View style={CustomStyles('green_card')}>
                                             <Text style={CustomStyles('green_card_text')}>
@@ -195,7 +196,7 @@ export const ForgotPassword = ({navigation}) => {
                                             </Text>
                                         </View>
                                     </View>
-                            </View>
+                            </View> */}
                             <View style={CustomStyles('section_container')}>
                                 <Text
                                         style={CustomStyles('p_text')}
@@ -273,13 +274,33 @@ export const NavBarRightMenu = ({navigation}) => {
 }
 
 
+export const get_login_user_information = async  () => {
+    const first_name = await AsyncStorage.getItem('first_name');
+    const last_name = await AsyncStorage.getItem('last_name');
+    const api_token = await AsyncStorage.getItem('api_token');
+    console.log('user info ...');
+    return {
+        first_name,
+        last_name,
+        api_token
+    }
+}
+
 export const OverView = ({navigation,route}) => {
+    const [firstName,setFirstName] = useState(' ');
+    useEffect(()=>{
+        get_login_user_information().then(res=>{
+            setFirstName(res.first_name);
+        }).catch(err =>{
+            console.log(err);
+        });
+    });
     return(
         <View style={CustomStyles('main_container_with_bottom_nav')}>
             <View style={CustomStyles('body_container_with_bottom_nav')}>
-                <View style={CustomStyles('section_container')}>
+                <View style={CustomStyles('section_container')}> 
                     <Text style={CustomStyles('greeting_text')}>
-                        Good Morning Moshood!
+                    Good Morning {firstName} !
                     </Text>
                 </View> 
                 <View style={CustomStyles('section_container')}>
@@ -315,10 +336,10 @@ export const OverView = ({navigation,route}) => {
                                 style={CustomStyles('card')}
                             >
                                 <View style={CustomStyles('card_header')}>
-                                    <Text style={CustomStyles('card_header_text')}>Fixed Services</Text>
+                                    <Text style={CustomStyles('card_header_text')}>Apartments</Text>
                                 </View>
                                 <View style={CustomStyles('card_body')}>
-                                    <Text style={CustomStyles('card_body_text')}>02</Text>
+                                    <Text style={CustomStyles('card_body_text')}>10</Text>
                                 </View>
                                 <View style={CustomStyles('card_footer')}>
                                     <Text style={CustomStyles('card_footer_text')}>View All ></Text>
@@ -327,7 +348,7 @@ export const OverView = ({navigation,route}) => {
 
                             <TouchableOpacity style={CustomStyles('card')}>
                                 <View style={CustomStyles('card_header')}>
-                                    <Text style={CustomStyles('card_header_text')}>Flexible Services</Text>
+                                    <Text style={CustomStyles('card_header_text')}>Vehicles</Text>
                                 </View>
                                 <View style={CustomStyles('card_body')}>
                                     <Text style={CustomStyles('card_body_text')}>05</Text>
