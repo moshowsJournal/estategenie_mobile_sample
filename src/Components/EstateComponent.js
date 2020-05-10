@@ -1,8 +1,9 @@
 import React,{useState,useEffect} from 'react';
 import {Text,View,TouchableOpacity,TextInput,Picker,Image,Modal} from 'react-native';
+import ToastNotification from 'react-native-toast-notification'
 import {get_login_user_information} from './HomeComponent'
 import {CustomStyles} from './Styles';
-import {processGetRequestWithToken} from '../functions/HomeFunction';
+import {processGetRequestWithToken,processPostRequestWithToken} from '../functions/HomeFunction';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Button } from 'react-native-paper';
@@ -14,6 +15,7 @@ export const FindYourEstate = ({navigation,route}) => {
     const [countryCodes,setCountryCodes] = useState([]);
     useEffect(()=>{
         processGetRequestWithToken(`${baseUrl}/api/users/get_all_estates`).then(res =>{
+            console.log(res);
             setEstate(Object.values(res.estates));
             setCountryCodes(Object.keys(res.estates));
         }).catch(err => { 
@@ -50,15 +52,15 @@ export const FindYourEstate = ({navigation,route}) => {
                             return(
                                 <View key={index}>
                                     <Text style={{fontWeight:'bold',fontSize:15}}>{country_code}</Text>
-                                    
-
                                     {
                                         estates[index].map((estate,key)=>{
                                             return(
                                                 <TouchableOpacity style={CustomStyles('horizontal_card')}
                                                         onPress={()=>navigation.navigate('ApartmentsInEstate',{
-                                                            estate_name : estate.estate_name
+                                                            estate_name : estate.estate_name,
+                                                            estate_id : estate.estate_id
                                                         })}
+                                                        key={key}
                                                     >
                                                     <Text style={CustomStyles('horizontal_card_header')}>{estate.estate_name}</Text>
                                                     <Text style={CustomStyles('label_text')}>{estate.estate_address}</Text>
@@ -80,8 +82,8 @@ export const FindYourEstate = ({navigation,route}) => {
         </View>
     )
 }
-
-export const ModalComponent = ({showModal,manageShowModalState,navigation}) => {
+export const ModalComponent = ({showModal,manageShowModalState,navigation,apartment_id,building_unit_id,estate_id}) => {
+    const [processing,setProcessing] = useState(false);
     return(
         <Modal
             visible={showModal}
@@ -108,18 +110,35 @@ export const ModalComponent = ({showModal,manageShowModalState,navigation}) => {
                     <View style={CustomStyles('section_container')}>
                         <TouchableOpacity style={CustomStyles('form_group')}
                             onPress={()=>{
-                                manageShowModalState(false)
-                                navigation.navigate('ApartmentSelectedConfirmation')
+                                let requestData = {
+                                    apartment_id,
+                                    building_unit_id,
+                                    estate_id 
+                                }
+                                setProcessing(true);
+                               processPostRequestWithToken(`${baseUrl}/api/users/principal_chooses_apartment`,requestData).then(res => {
+                                   console.log(res);
+                                   if(res.code === 200){
+                                        manageShowModalState(false)
+                                       return navigation.navigate('ApartmentSelectedConfirmation');
+                                   }
+                                   return setProcessing(false);
+                               });
                             }}
+                            disabled={processing}
                         >
                                 <View style={CustomStyles('submit_button')}>
-                                    <Text style={CustomStyles('submit_button_text')}>Proceed</Text>
+                        <Text style={CustomStyles('submit_button_text')}>{processing ? 'Please Wait...' : 'Proceed'}</Text>
                                 </View>
                         </TouchableOpacity>
-                        <Text
-                            style={CustomStyles('p_text')}
-                            onPress={()=>manageShowModalState(false)}
-                        >Cancel Validate</Text>
+                        {processing !== true && (
+                            <Text
+                                style={CustomStyles('p_text')}
+                                onPress={()=>manageShowModalState(false)}
+                            >
+                                Cancel Validate
+                            </Text>
+                        )}
                     </View>
             </View>
         </Modal>
@@ -158,66 +177,64 @@ export const ApartmentSelectedConfirmation = ({navigation}) => (
 
 export const ApartmentsInEstate = ({navigation,route}) => {
     const [showModal,manageShowModalState] = useState(false);
+    const [buildings,setBuildingState] = useState([]);
+    const [selectedApartmentId,setSelectedApartmentId] = useState();
+    const [selectedBuildingId,setSelectedBuildingId] = useState();
+    useEffect(()=>{
+        processGetRequestWithToken(`${baseUrl}/api/users/get_buildings_from_estate?estate_id=${route.params.estate_id}`).then(res => {
+            if(res.code === 200){
+                setBuildingState(res.buildings);
+            }
+        
+        }).catch(error => {
+            console.log(error);
+        })
+    },[
+
+    ]);
     return(
         <View style={CustomStyles('main_container_with_bottom_nav')}>
             <View style={CustomStyles('body_container_with_bottom_nav')}>
-
                 <ScrollView style={CustomStyles('section_container')}>
-                    <Text style={CustomStyles('card_outer_header')}>Flat 1 Street 1 (‘Flat 1’)</Text>
-                    <TouchableOpacity style={CustomStyles('horizontal_card_with_image')}
-                        onPress={()=>manageShowModalState(true)}
-                    >
-                        <View style={{flex:1}}>
-                            <Image 
-                                style={CustomStyles('image_file')}
-                                source={require('../assets/images/apartment.png')}
-                            />
-                        </View>
-                        <View style={{flex:5}}>
-                            <Text style={CustomStyles('horizontal_card_header')}>Hill Crest Estate – Multi Street – 7 Buildings</Text>
-                            <Text style={CustomStyles('label_text')}>Plot 65 - 75, Bode Thomas, Surulere, Lagos, Nigeria</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={CustomStyles('horizontal_card_with_image')}>
-                        <View style={{flex:1}}>
-                            <Image 
-                                style={CustomStyles('image_file')}
-                                source={require('../assets/images/apartment.png')}
-                            />
-                        </View>
-                        <View style={{flex:5}}>
-                            <Text style={CustomStyles('horizontal_card_header')}>Hill Crest Estate – Multi Street – 7 Buildings</Text>
-                            <Text style={CustomStyles('label_text')}>Plot 65 - 75, Bode Thomas, Surulere, Lagos, Nigeria</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <Text style={CustomStyles('card_outer_header')}>Flat 1 Street 1 (‘Flat 1’)</Text>
-                    <TouchableOpacity style={CustomStyles('horizontal_card_with_image')}>
-                        <View style={{flex:1}}>
-                            <Image 
-                                style={CustomStyles('image_file')}
-                                source={require('../assets/images/apartment.png')}
-                            />
-                        </View>
-                        <View style={{flex:5}}>
-                            <Text style={CustomStyles('horizontal_card_header')}>Hill Crest Estate – Multi Street – 7 Buildings</Text>
-                            <Text style={CustomStyles('label_text')}>Plot 65 - 75, Bode Thomas, Surulere, Lagos, Nigeria</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={CustomStyles('horizontal_card_with_image')}>
-                        <View style={{flex:1}}>
-                            <Image 
-                                style={CustomStyles('image_file')}
-                                source={require('../assets/images/apartment.png')}
-                            />
-                        </View>
-                        <View style={{flex:5}}>
-                            <Text style={CustomStyles('horizontal_card_header')}>Hill Crest Estate – Multi Street – 7 Buildings</Text>
-                            <Text style={CustomStyles('label_text')}>Plot 65 - 75, Bode Thomas, Surulere, Lagos, Nigeria</Text>
-                        </View>
-                    </TouchableOpacity>
+                    
+                    {
+                        buildings.map((building, index) => {
+                            let building_name = building.building_name;
+                            return(
+                                <>
+                                    <Text key={index} style={CustomStyles('card_outer_header')}>{building.building_name}</Text>
+                                    {
+                                        building.apartments.map((apartment,key)=>{
+                                            return(
+                                                <TouchableOpacity key={key} style={CustomStyles('horizontal_card_with_image')}
+                                                    onPress={()=>{
+                                                        setSelectedApartmentId(apartment.apartment_id);
+                                                        setSelectedBuildingId(apartment.building_unit_id);
+                                                        manageShowModalState(true)
+                                                    }}
+
+                                                >
+                                                    <View style={{flex:1}}>
+                                                        <Image 
+                                                            style={CustomStyles('image_file')}
+                                                            source={require('../assets/images/apartment.png')}
+                                                        />
+                                                    </View>
+                                                    <View style={{flex:5}}>
+                                            <Text style={CustomStyles('horizontal_card_header')}>{apartment.apartment_name}, {building_name}, {route.params.estate_name}</Text>
+                                                    </View>
+                                                </TouchableOpacity>
+                                            )
+                                        })
+                                    }
+                                </>
+                            )
+                        })
+                    }
+                    
                 </ScrollView>
             </View>
-            <ModalComponent showModal={showModal} manageShowModalState={manageShowModalState} navigation={navigation} />
+            <ModalComponent showModal={showModal} manageShowModalState={manageShowModalState} navigation={navigation} apartment_id={selectedApartmentId} building_unit_id={selectedBuildingId} estate_id={route.params.estate_id}/>
             <View style={{height:'15%',backgroundColor:'white'}}>
                 <BottomTabNavigation navigation={navigation} route={route}/>
             </View>

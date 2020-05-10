@@ -39,7 +39,31 @@ export const processGetRequestWithToken = async (url) => {
             const res = await axios.get(url, {
                 headers:{Authorization : `Bearer ${api_token}`}
             });
-            console.log(res)
+            return res.data.response;
+        }
+        catch (error) {
+             console.log(error);
+        }
+    }catch(err){
+        console(err);
+    }
+}
+
+export const processPostRequestWithToken = async (url,requestData) => {
+    /**
+     * --url,
+     * --data,
+     * --token
+     * http://127.0.0.1:8000/api/users/resident_register?email=olamilekan_lokoso@gmail.com&firstname=Olaoluwa&surname=Adewale&password=password&phone=08140812969
+     */
+    try{
+        try {
+            const api_token = await AsyncStorage.getItem('api_token');
+            console.log('......token......');
+            console.log(api_token);
+            const res = await axios.post(url, requestData,{
+                headers:{Authorization : `Bearer ${api_token}`}
+            });
             return res.data.response;
         }
         catch (error) {
