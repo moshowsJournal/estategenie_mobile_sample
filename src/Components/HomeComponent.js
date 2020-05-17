@@ -253,9 +253,8 @@ export const NavBarRightMenu = ({navigation}) => {
                style={CustomStyles('navbar_icons')} 
             >
                 <Image 
-                        style={CustomStyles('image_file')}
-                        source={require('../assets/images/notifications.png')}
-                    />
+                    source={require('../assets/images/notifications.png')}
+                />
             </TouchableOpacity>
             <TouchableOpacity
                 onPress={()=> {
@@ -264,7 +263,6 @@ export const NavBarRightMenu = ({navigation}) => {
                 style={CustomStyles('navbar_icons')}
             >
                 <Image 
-                        style={CustomStyles('image_file')}
                         source={require('../assets/images/menu.png')}
                     />
             </TouchableOpacity>
@@ -645,32 +643,32 @@ export const VerificationSuccessful = ({navigation}) => (
             </View>
 )
 
-export const ConfirmResetPassword = ({navigation}) => (
+export const ConfirmationScreen = ({navigation,route}) => (
     <View style={CustomStyles('body_container')}>
-                    <View style={CustomStyles('section_container')}>
-                        <Text style={CustomStyles('header_text')}>Password Reset!</Text>
-                    </View>
-                    <View style={CustomStyles('section_container')}>
-                            <View style={CustomStyles('image_container')}>
-                                <Image 
-                                    style={CustomStyles('image_file')}
-                                    source={require('../assets/images/illustration.png')}
-                                />
-                            </View>
-                    </View>
-                    <View style={CustomStyles('section_container')}>
-                        <Text style={CustomStyles('p_text')}>
-                        You have successfully reset your password. Log in and continue the good work you already started.
-                        </Text>
-                    </View>
-                    <View style={CustomStyles('section_container')}>
-                        <TouchableOpacity style={CustomStyles('form_group')}
-                            onPress={()=>navigation.navigate('Login')}
-                        >
-                                <View style={CustomStyles('submit_button')}>
-                                    <Text style={CustomStyles('submit_button_text')}>Go to Login</Text>
-                                </View>
-                        </TouchableOpacity>
-                    </View>
+            <View style={CustomStyles('section_container')}>
+                <Text style={CustomStyles('header_text')}>{route.params.title}</Text>
             </View>
+            <View style={CustomStyles('section_container')}>
+                <View style={CustomStyles('image_container')}>
+                    <Image 
+                        style={CustomStyles('image_file')}
+                        source={require('../assets/images/illustration.png')}
+                    />
+                </View>
+            </View>
+            <View style={CustomStyles('section_container')}>
+                <Text style={CustomStyles('p_text')}>
+                {route.params.body ? route.params.body : 'You have successfully reset your password. Log in and continue the good work you already started.'} 
+                </Text>
+            </View>
+            <View style={CustomStyles('section_container')}>
+                <TouchableOpacity style={CustomStyles('form_group')}
+                    onPress={()=>navigation.navigate(route.params.screen)}
+                >
+                    <View style={CustomStyles('submit_button')}>
+                        <Text style={CustomStyles('submit_button_text')}>{route.params.button_text}</Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
+    </View>
 )

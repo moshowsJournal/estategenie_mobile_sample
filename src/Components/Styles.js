@@ -1,5 +1,70 @@
 import React from 'react';
 
+export const inline_style = {
+    icon_style : {
+        fontSize:20,
+        color: '#737A91'
+    },
+    profile_top_item_divider : {
+        borderTopWidth:6,
+        borderColor:'#f7f3f3',
+    },
+    profile_bottom_item_divider : {
+        borderTopWidth:3,
+        borderColor:'#f7f3f3',
+    },
+    body_container_with_bottom_nav : {
+        backgroundColor: '#f9fafa',
+        padding:15,
+        flex:1,
+        paddingTop:30,
+        height:'85%',
+        marginBot:30
+     },
+     main_container_with_bottom_nav : {
+        flex : 1
+     },
+     section_container : {
+         margin:20
+     },
+     section_container_with_bottom_nav : {
+        margin:20,
+        marginBottom:70
+     },
+     edit_profile_image:{
+        width : '100%',
+        height:120
+     },
+     upload_profile_image_icon_container : {
+         flex:1,
+         justifyContent:'center',
+         alignItems:'center'
+     },
+     form_group : {
+        marginTop:10,
+        marginBottom:10
+     },
+     label_text : {
+        fontFamily: 'Galano Grotesque',
+        fontSize: 14,
+        lineHeight: 19,
+        color: '#737A91',
+        marginBottom:5,
+        width:'100%'
+     },
+     input_field : {
+        backgroundColor: '#FFFFFF',
+        borderColor:'#00921B',
+        borderWidth: 2,
+        color: 'black',
+        borderRadius: 6,
+        paddingLeft:20
+     }
+
+     
+
+}
+
 export const CustomStyles = (style_name) => {
     switch(style_name){
         case 'login_nav_content':
@@ -37,8 +102,8 @@ export const CustomStyles = (style_name) => {
                 padding:15,
                 flex:1,
                 paddingTop:30,
-                height:'85%'
-
+                height:'85%',
+                marginBottom:25
             }
             
             case 'header_text':
@@ -179,10 +244,22 @@ export const CustomStyles = (style_name) => {
                 case 'image_file':
                     return {
                         resizeMode:'contain',
+                        width : '100%',
+                        height:120
                     }
                 case 'image_container':
                     return {
                         alignItems:'center'
+                    }
+                case 'profile_image_container':
+                    return{
+                        width : 110,
+                        height:110,
+                        borderColor:'white',
+                        borderRadius:5,
+                        borderWidth:3,
+                        paddingBottom:3,
+                        marginBottom:15
                         
                     }
                 case 'green_card':
@@ -318,6 +395,29 @@ export const CustomStyles = (style_name) => {
                 case 'clicked_bottom_nav_text' : 
                     return{
                         color:'#00921B'
+                    }
+                case 'item_icon':
+                    return{
+                        
+                        color: '#737A91',
+                        fontSize:20,
+                        flex:2
+                    }
+                case 'item_container' : 
+                    return{
+                        flexDirection:'row',
+                        padding:20
+                    }
+                case 'item_text':
+                    return{
+                        fontSize:14,
+                        flex:6,
+                        lineHeight: 19,
+                        color: '#737A91',
+                    }
+                case 'item_icon':
+                    return{
+                        color:'#DFE2E6',
                     }
                 case 'main_container_with_bottom_nav':
                     return{

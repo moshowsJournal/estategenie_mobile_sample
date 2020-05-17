@@ -23,12 +23,13 @@ import {
   DebugInstructions,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-import {Login,SignUp,LogoSection,VerificationSuccessful, EnterVerificationPin,ForgotPassword,PasswordReset,ConfirmResetPassword,OverView,NavBarRightMenu,BottomTabNavigation} from './src/Components/HomeComponent'; 
+import {Login,SignUp,LogoSection,VerificationSuccessful, EnterVerificationPin,ForgotPassword,PasswordReset,ConfirmationScreen,OverView,NavBarRightMenu,BottomTabNavigation} from './src/Components/HomeComponent'; 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {FindYourEstate,UseEstateCodeNavItem,FindByEstateCode,ApartmentsInEstate,ApartmentSelectedConfirmation} from './src/Components/EstateComponent';
+import {MyProfile, EditProfile,UpdatePassword} from './src/Components/ProfileComponent';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { CustomStyles } from './src/Components/Styles';
 
@@ -46,9 +47,70 @@ class App extends Component{
                   }}
                 >
                       
-
-
                     
+{/* 
+                      <Stack.Screen 
+                          name="Login"
+                          component={Login}
+                      /> */}
+
+                      <Stack.Screen
+                          name="MyProfile"
+                          component={MyProfile}
+                          options={ ({navigation}) => {
+                            return{
+                              headerTitleAlign:'left',
+                              headerStyle:{
+                                backgroundColor:'#FAFAFA'
+                              },
+                              headerTintColor : "black",
+                              headerTitleStyle:{
+                                  fontWeight:'bold',
+                                  fontSize:18
+                              },
+                              headerTitle: "My Profile",
+                            }
+                        }}
+                      />
+
+                      <Stack.Screen 
+                        name="UpdatePassword"
+                        component={UpdatePassword}
+                        options={ ({navigation}) => {
+                            return{
+                              headerTitleAlign:'left',
+                              headerStyle:{
+                                backgroundColor:'#FAFAFA'
+                              },
+                              headerTintColor : "black",
+                              headerTitleStyle:{
+                                  fontWeight:'bold',
+                                  fontSize:18
+                              },
+                              headerTitle: "Update Password",
+                            }
+                        }}
+                      />
+
+                      <Stack.Screen 
+                          name="EditProfile"
+                          component={EditProfile}
+                          options={() =>{
+                              return{
+                                headerTitleAlign:'left',
+                                headerTitle:'Edit Profile',
+                                headerStyle:{
+                                  backgroundColor:'#FAFAFA'
+                                },
+                                headerTintColor : "black",
+                                headerTitleStyle:{
+                                    fontWeight:'bold',
+                                    fontSize:18
+                                }
+                              }
+                          }}
+                      
+                      />
 
                       <Stack.Screen
                           name="Overview"
@@ -56,23 +118,21 @@ class App extends Component{
                           options={ ({navigation}) => {
                             return{
                               headerTitleAlign:'left',
-                            headerStyle:{
-                              backgroundColor:'#FAFAFA'
-                            },
-                            headerTintColor : "black",
-                            headerTitleStyle:{
-                                fontWeight:'bold',
-                                fontSize:18
-                            },
-                            headerTitle: "Overview",
-                            headerRight : () => (
-                              <NavBarRightMenu navigation={navigation}/>
-                            ),
+                              headerStyle:{
+                                backgroundColor:'#FAFAFA'
+                              },
+                              headerTintColor : "black",
+                              headerTitleStyle:{
+                                  fontWeight:'bold',
+                                  fontSize:18
+                              },
+                              headerTitle: "Overview",
+                              headerRight : () => (
+                                <NavBarRightMenu navigation={navigation}/>
+                              ),
                             }
                         }}
                       />
-
-
                       <Stack.Screen
                           name="FindYourEstate"
                           component={FindYourEstate}
@@ -155,16 +215,9 @@ class App extends Component{
                       >
 
                       </Stack.Screen>
-                      
-                      
-
-                      <Stack.Screen 
-                          name="Login"
-                          component={Login}
-                      />
                       <Stack.Screen
-                        name="ConfirmResetPassword"
-                        component={ConfirmResetPassword}
+                        name="ConfirmationScreen"
+                        component={ConfirmationScreen}
                       />
                       <Stack.Screen
                           name="ForgotPassword"

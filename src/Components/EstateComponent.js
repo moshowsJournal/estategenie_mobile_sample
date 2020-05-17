@@ -269,7 +269,6 @@ export const BottomTabNavigation = ({route,navigation}) => {
                     {route.name === 'apartments' || route.name.includes('Estate') || route.name.includes('Apartment') ? 
                         <Text style={CustomStyles('clicked_bottom_nav_text')}>Apartments</Text> : 
                         <Text style={CustomStyles('bottom_nav_text')}>Apartments</Text>}
-                    
                 </TouchableOpacity>
 
                 <TouchableOpacity style={CustomStyles('nav_item')}>
@@ -280,13 +279,14 @@ export const BottomTabNavigation = ({route,navigation}) => {
                     {route === 'service' ? 
                         <Text style={CustomStyles('clicked_bottom_nav_text')}>Service</Text> : 
                         <Text style={CustomStyles('bottom_nav_text')}>Service</Text>}
-                    
                 </TouchableOpacity>
 
 
-                <TouchableOpacity style={CustomStyles('nav_item')}>
-                    {route === 'profile' ? <MaterialIcons name="person" style={CustomStyles('clicked_bottom_nav_icons')}/> : <MaterialIcons name="person" style={CustomStyles('bottom_nav_icons')}/>}
-                    {route === 'profile' ? <Text style={CustomStyles('clicked_bottom_nav_text')}>Person</Text> : <Text style={CustomStyles('bottom_nav_text')}>Person</Text>}
+                <TouchableOpacity style={CustomStyles('nav_item')}
+                    onPress={()=>navigation.navigate('MyProfile')}
+                >
+                    {route.name === 'profile' || route.name.includes('Profile') ? <MaterialIcons name="person" style={CustomStyles('clicked_bottom_nav_icons')}/> : <MaterialIcons name="person" style={CustomStyles('bottom_nav_icons')}/>}
+                    {route.name === 'profile' || route.name.includes('Profile') ? <Text style={CustomStyles('clicked_bottom_nav_text')}>Person</Text> : <Text style={CustomStyles('bottom_nav_text')}>Profile</Text>}
                     
                 </TouchableOpacity>
         </View>
