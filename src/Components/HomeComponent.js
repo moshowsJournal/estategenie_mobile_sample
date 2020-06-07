@@ -2,7 +2,7 @@ import React,{useState,useEffect} from 'react';
 import {Text, View,TextInput, Button,Image, TouchableOpacityComponent} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {CustomStyles} from './Styles';
+import {CustomStyles,inline_style} from './Styles';
 import {processPostRequest,TextFieldRules,ProcessLoginRequest} from '../functions/HomeFunction';
 import {baseUrl} from './environment_variable';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -207,7 +207,7 @@ export const ForgotPassword = ({navigation}) => {
         </KeyboardAwareScrollView>
     )
 }
-export const NavigatioMenuList = ({navigation}) => {
+export const NavigatioMenuList = ({navigation,route}) => {
     return(
         <View 
             style={CustomStyles('navigation_menu_list')}
@@ -226,16 +226,20 @@ export const NavigatioMenuList = ({navigation}) => {
                      style={CustomStyles('navigation_menu_item')}
                 >New Estate Registration</Text>
                 </TouchableOpacity>
-                <TouchableOpacity 
-                    onPress={()=>navigation.navigate('AddOccupant')}
+                {
+                    route.name === 'ApartmentDetails' && <TouchableOpacity 
+                    onPress={()=>navigation.navigate('AddOccupant',{
+                        ... route.params
+                    })}
                 >
                     <Text
                         style={CustomStyles('navigation_menu_item')}
                     >Add Occupant</Text>
                 </TouchableOpacity>
-                <Text
+                }
+                {/* <Text
                      style={CustomStyles('navigation_menu_item')}
-                >Add Domestic Staff</Text>
+                >Add Domestic Staff</Text> */}
                 <Text
                      style={CustomStyles('navigation_menu_item')}
                 >Book Visitor</Text>
@@ -249,7 +253,7 @@ export const NavigatioMenuList = ({navigation}) => {
         </View>
     );
 }
-export const NavBarRightMenu = ({navigation}) => {
+export const NavBarRightMenu = ({navigation,route}) => {
     let [showNavMenu,setShowNavMenu] = useState(false)
     return(
         <View style={CustomStyles('main_navbar')}>
@@ -270,7 +274,7 @@ export const NavBarRightMenu = ({navigation}) => {
                         source={require('../assets/images/menu.png')}
                     />
             </TouchableOpacity>
-            {showNavMenu && <NavigatioMenuList navigation={navigation} />}
+            {showNavMenu && <NavigatioMenuList navigation={navigation} route={route} />}
         </View>
     )
 }
@@ -649,7 +653,7 @@ export const ConfirmationScreen = ({navigation,route}) => (
         <View style={CustomStyles('section_container')}>
             <Text style={CustomStyles('header_text')}>{route.params.title}</Text>
         </View>
-        <View style={CustomStyles('section_container')}>
+        <View style={inline_style.image_section_container}>
             <View style={CustomStyles('image_container')}>
                 <Image 
                     style={CustomStyles('image_file')}

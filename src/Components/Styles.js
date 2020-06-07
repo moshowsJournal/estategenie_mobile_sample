@@ -27,6 +27,10 @@ export const inline_style = {
      section_container : {
          margin:20
      },
+     image_section_container : {
+         margin:20,
+         alignItems:'center'
+     },
      section_container_with_border_line : {
         margin:20,
         borderBottomWidth:1,
@@ -39,7 +43,7 @@ export const inline_style = {
      },
      edit_profile_image:{
         width : '100%',
-        height:120
+        height:'100%'
      },
      upload_profile_image_icon_container : {
          flex:1,
@@ -84,7 +88,8 @@ export const inline_style = {
         marginBottom:5,
         fontWeight:'bold',
         width:'100%'
-    }
+    },
+    list_container : {marginBottom:50}
 
      
 
@@ -194,7 +199,19 @@ export const CustomStyles = (style_name) => {
                         padding:15,
                         borderRadius:5,
                         borderWidth:1,
-                        borderColor:'#DFE2E6'
+                        borderColor:'#DFE2E6',
+                    }
+                case 'row_horizontal_card':
+                    return{
+                        flex:1,
+                        backgroundColor:'white',
+                        marginTop:5,
+                        marginBottom:5,
+                        padding:15,
+                        borderRadius:5,
+                        borderWidth:1,
+                        borderColor:'#DFE2E6',
+                        flexDirection:'row'
                     }
 
                     case 'horizontal_card_with_image':
@@ -274,7 +291,9 @@ export const CustomStyles = (style_name) => {
                     }
                 case 'image_container':
                     return {
-                        alignItems:'center'
+                        alignItems:'center',
+                        width:100,
+                        height:100
                     }
                 case 'profile_image_container':
                     return{

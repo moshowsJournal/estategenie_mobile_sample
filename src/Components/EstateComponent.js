@@ -63,7 +63,7 @@ export const FindYourEstate = ({navigation,route}) => {
                                                         key={key}
                                                     >
                                                     <Text style={CustomStyles('horizontal_card_header')}>{estate.estate_name}</Text>
-                                                    <Text style={CustomStyles('label_text')}>{estate.estate_address}</Text>
+                                                    <Text style={inline_style.horizontal_card_text}>{estate.estate_address}</Text>
                                                 </TouchableOpacity>
                                             )
                                         })
@@ -94,13 +94,13 @@ export const ModalComponent = ({showModal,manageShowModalState,navigation,apartm
                     <View style={CustomStyles('section_container')}>
                         <Text style={CustomStyles('header_text')}>Validate Apartment!</Text>
                     </View>
-                    <View style={CustomStyles('section_container')}>
-                            <View style={CustomStyles('image_container')}>
-                                <Image 
-                                    style={CustomStyles('image_file')}
-                                    source={require('../assets/images/vector.png')}
-                                />
-                            </View>
+                    <View style={inline_style.image_section_container}>
+                        <View style={CustomStyles('image_container')}>
+                            <Image 
+                                style={CustomStyles('image_file')}
+                                source={require('../assets/images/vector.png')}
+                            />
+                        </View>
                     </View>
                     <View style={CustomStyles('section_container')}>
                         <Text style={CustomStyles('p_text')}>
