@@ -1,1 +1,1 @@
-export const baseUrl = 'http://estategenie.ageofbrains.com';
+export const baseUrl = 'https://estategenie.ageofbrains.com';

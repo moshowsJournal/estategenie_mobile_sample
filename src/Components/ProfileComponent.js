@@ -1,7 +1,7 @@
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
 import {Text,View,TouchableOpacity,Image,Switch, ImageBackground, TextInput} from 'react-native';
 import {CustomStyles,inline_style} from './Styles';
-import {processGetRequestWithToken,processPostRequestWithToken} from '../functions/HomeFunction';
+import {processGetRequestWithToken,processPostRequestWithToken,getLocalStorageInformation} from '../functions/HomeFunction';
 import {baseUrl} from './environment_variable';
 import {BottomTabNavigation} from './EstateComponent';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -12,6 +12,28 @@ import {ConfirmationScreen} from './HomeComponent';
 
 export const EditProfile = ({navigation,route}) =>{
     const [hideBottonNav,setHideBottomNav] = useState(false);
+    const [profileImage,setProfileImage] = useState(require('../assets/images/profile_image.png'));
+    const [profileInformation,setProfileInformation] = useState({
+        first_name : '',
+        last_name : '',
+        email_address : '',
+        profile_image : require('../assets/images/profile_image.png')
+    })
+    useEffect(()=>{
+        getLocalStorageInformation().then(({$_first_name,$_last_name,$_email_address,$_profile_image}) => {
+            setProfileInformation({
+                first_name : $_first_name,
+                last_name : $_last_name,
+                email_address : $_email_address,
+                profile_image : $_profile_image === null ? require('../assets/images/profile_image.png') : {uri:baseUrl+$_profile_image}
+            })
+            return(()=>{
+                console.log('component updated');
+            });
+        });
+    },[
+        setHideBottomNav  
+    ]);
     return(
         <View style={inline_style.main_container_with_bottom_nav}>
             <KeyboardAwareScrollView style={inline_style.body_container_with_bottom_nav}>
@@ -19,7 +41,7 @@ export const EditProfile = ({navigation,route}) =>{
                     <TouchableOpacity style={CustomStyles('profile_image_container')}>
                         <ImageBackground
                             style={inline_style.edit_profile_image}
-                            source={require('../assets/images/profile.png')}>
+                            source={profileInformation.profile_image}>
                                 <View style={inline_style.upload_profile_image_icon_container}>
                                     <Image 
                                         source={require('../assets/images/upload_image.png')}
@@ -36,6 +58,7 @@ export const EditProfile = ({navigation,route}) =>{
                             onBlur={()=>setHideBottomNav(false)}
                             style={inline_style.input_field}
                             placeholder="First Name"
+                            value={profileInformation.first_name}
                         />
                     </View>
                     <View style={inline_style.form_group}>
@@ -45,6 +68,7 @@ export const EditProfile = ({navigation,route}) =>{
                             onBlur={()=>setHideBottomNav(false)}
                             style={inline_style.input_field}
                             placeholder="Last Name"
+                            value={profileInformation.last_name}
                         />
                     </View>
                     <View style={inline_style.form_group}>
@@ -54,6 +78,8 @@ export const EditProfile = ({navigation,route}) =>{
                             onBlur={()=>setHideBottomNav(false)}
                             style={inline_style.input_field}
                             placeholder="Email Address"
+                            value={profileInformation.email_address}
+                            editable={false}
                         />
                     </View>
                     <TouchableOpacity style={CustomStyles('form_group')}>
@@ -143,6 +169,22 @@ export const UpdatePassword = ({navigation,route}) =>{
 }
 
 export const MyProfile = ({navigation,route}) => {
+    const [profileImage,setProfileImage] = useState(require('../assets/images/profile_image.png'));
+    const [fullName, setFullName] = useState('');
+    // useEffect(()=>{
+    //     console.log('My Profile Did Mount')
+    //     getLocalStorageInformation().then(({$_first_name,$_last_name,$_profile_image}) => {
+    //         if($_profile_image !== null){
+    //             setProfileImage({uri:baseUrl+$_profile_image});
+    //         }
+    //         setFullName($_first_name+' '+$_last_name);
+    //     }); 
+    //     return()=>{
+    //         console.log('Component updated...');
+    //     };
+    // },[
+    //     profileImage
+    // ]);
     return(
         <View style={CustomStyles('main_container_with_bottom_nav')}>
             <ScrollView style={CustomStyles('body_container_with_bottom_nav')}>
@@ -150,10 +192,10 @@ export const MyProfile = ({navigation,route}) => {
                     <View style={CustomStyles('profile_image_container')}>
                         <Image
                             style={inline_style.edit_profile_image}
-                            source={require('../assets/images/profile.png')} 
+                            source={profileImage} 
                         />
                     </View>
-                    <Text style={CustomStyles('card_header_text')}>Koolidge Bannister</Text>
+                    <Text style={CustomStyles('card_header_text')}>{fullName}</Text>
                 </View>
                 <View style={CustomStyles('section_container')}>
                     <View style={inline_style.profile_top_item_divider}></View>
@@ -208,7 +250,7 @@ export const MyProfile = ({navigation,route}) => {
                     </TouchableOpacity>
                     <View style={inline_style.profile_bottom_item_divider}></View>
                     <TouchableOpacity style={CustomStyles('item_container')}>
-                        <Text style={CustomStyles('item_text')}>SignOut</Text>
+                        <Text style={CustomStyles('item_text')}>Sign Out</Text>
                         <MaterialIcons 
                                 name='power-settings-new'
                                 style={inline_style.icon_style}

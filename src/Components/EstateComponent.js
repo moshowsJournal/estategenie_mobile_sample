@@ -2,7 +2,7 @@ import React,{useState,useEffect} from 'react';
 import {Text,View,TouchableOpacity,TextInput,Picker,Image,Modal} from 'react-native';
 import ToastNotification from 'react-native-toast-notification'
 import {get_login_user_information} from './HomeComponent'
-import {CustomStyles} from './Styles';
+import {CustomStyles,inline_style} from './Styles';
 import {processGetRequestWithToken,processPostRequestWithToken} from '../functions/HomeFunction';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -15,7 +15,7 @@ export const FindYourEstate = ({navigation,route}) => {
     const [countryCodes,setCountryCodes] = useState([]);
     useEffect(()=>{
         processGetRequestWithToken(`${baseUrl}/api/users/get_all_estates`).then(res =>{
-            console.log(res);
+            if(JSON.stringify(res).includes(401)) return navigation.navigate('Login');
             setEstate(Object.values(res.estates));
             setCountryCodes(Object.keys(res.estates));
         }).catch(err => { 
@@ -182,6 +182,7 @@ export const ApartmentsInEstate = ({navigation,route}) => {
     const [selectedBuildingId,setSelectedBuildingId] = useState();
     useEffect(()=>{
         processGetRequestWithToken(`${baseUrl}/api/users/get_buildings_from_estate?estate_id=${route.params.estate_id}`).then(res => {
+            console.log(res);
             if(res.code === 200){
                 setBuildingState(res.buildings);
             }
@@ -198,11 +199,10 @@ export const ApartmentsInEstate = ({navigation,route}) => {
                 <ScrollView style={CustomStyles('section_container')}>
                     
                     {
-                        buildings.map((building, index) => {
-                            let building_name = building.building_name;
+                        buildings.map((building,index) => {
                             return(
-                                <>
-                                    <Text key={index} style={CustomStyles('card_outer_header')}>{building.building_name}</Text>
+                                <View key={index}>
+                                    <Text style={CustomStyles('card_outer_header')}>{building.building_name}</Text>
                                     {
                                         building.apartments.map((apartment,key)=>{
                                             return(
@@ -212,22 +212,22 @@ export const ApartmentsInEstate = ({navigation,route}) => {
                                                         setSelectedBuildingId(apartment.building_unit_id);
                                                         manageShowModalState(true)
                                                     }}
-
+            
                                                 >
-                                                    <View style={{flex:1}}>
+                                                    <View style={inline_style.horizontal_card_img_container}>
                                                         <Image 
                                                             style={CustomStyles('image_file')}
                                                             source={require('../assets/images/apartment.png')}
                                                         />
                                                     </View>
-                                                    <View style={{flex:5}}>
-                                            <Text style={CustomStyles('horizontal_card_header')}>{apartment.apartment_name}, {building_name}, {route.params.estate_name}</Text>
+                                                    <View style={inline_style.horizontal_card_text_container}>
+                                                    <Text style={CustomStyles('horizontal_card_header')}>{apartment.apartment_name}, {building.unit_address}, {route.params.estate_name}</Text>
                                                     </View>
                                                 </TouchableOpacity>
-                                            )
+                                            );
                                         })
                                     }
-                                </>
+                                </View>
                             )
                         })
                     }
@@ -260,13 +260,13 @@ export const BottomTabNavigation = ({route,navigation}) => {
                 </TouchableOpacity>
                 
                 <TouchableOpacity style={CustomStyles('nav_item')}
-                    onPress={()=> console.log('Go to my apartments')}
+                    onPress={()=> navigation.navigate('MyApartments')}
                 >
-                    {route.name === 'apartments' || route.name.includes('Estate') || route.name.includes('Apartment') ? 
+                    {route.name === 'apartments' || route.name.includes('Estate') || route.name.includes('Apartment') || route.name.includes('Occupant') ? 
                         <MaterialIcons name="domain" style={CustomStyles('clicked_bottom_nav_icons')}/> : 
                         <MaterialIcons name="domain" style={CustomStyles('bottom_nav_icons')}/>}
 
-                    {route.name === 'apartments' || route.name.includes('Estate') || route.name.includes('Apartment') ? 
+                    {route.name === 'apartments' || route.name.includes('Estate') || route.name.includes('Apartment') || route.name.includes('Occupant') ? 
                         <Text style={CustomStyles('clicked_bottom_nav_text')}>Apartments</Text> : 
                         <Text style={CustomStyles('bottom_nav_text')}>Apartments</Text>}
                 </TouchableOpacity>

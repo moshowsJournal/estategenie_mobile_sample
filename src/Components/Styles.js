@@ -27,6 +27,12 @@ export const inline_style = {
      section_container : {
          margin:20
      },
+     section_container_with_border_line : {
+        margin:20,
+        borderBottomWidth:1,
+        borderColor:'#DFE2E6',
+        borderTopWidth:1,
+     },
      section_container_with_bottom_nav : {
         margin:20,
         marginBottom:70
@@ -54,12 +60,31 @@ export const inline_style = {
      },
      input_field : {
         backgroundColor: '#FFFFFF',
-        borderColor:'#00921B',
+        borderColor:'#E9EBEE',
         borderWidth: 2,
         color: 'black',
         borderRadius: 6,
         paddingLeft:20
-     }
+     },
+     horizontal_card_img_container :{flex:1,marginRight:15},
+     horizontal_card_text_container:{
+        flex:5,
+        justifyContent:'center'
+    },
+    horizontal_card_text:{
+        fontSize:15,
+        justifyContent:'center',
+        color:'#737A91',
+        marginBottom:5
+    },
+    horizontal_card_header:{
+        fontFamily: 'Galano Grotesque',
+        fontSize: 14,
+        color: '#737A91',
+        marginBottom:5,
+        fontWeight:'bold',
+        width:'100%'
+    }
 
      
 
@@ -179,7 +204,7 @@ export const CustomStyles = (style_name) => {
                             backgroundColor:'white',
                             marginTop:5,
                             marginBottom:5,
-                            padding:15,
+                            padding:25,
                             borderRadius:5,
                             borderWidth:1,
                             borderColor:'#DFE2E6'
@@ -245,7 +270,7 @@ export const CustomStyles = (style_name) => {
                     return {
                         resizeMode:'contain',
                         width : '100%',
-                        height:120
+                        height:'100%'
                     }
                 case 'image_container':
                     return {

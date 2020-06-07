@@ -41,7 +41,6 @@ export const Login = ({navigation}) => {
                                             placeholder="Enter Email Address"
                                             style={CustomStyles('input_field')}
                                             onChangeText={(value)=>setEmailAddress(value)}
-
                                         />
                                     </View>
                                     <View style={CustomStyles('form_group')}>
@@ -84,6 +83,7 @@ export const Login = ({navigation}) => {
                                                  }
                                                 navigation.navigate('Overview',{firstname:response.user.firstname});
                                             }).catch(error=>{
+                                                console.log(error);
                                                 setProcessing(false);
                                             });
                                         }}
@@ -226,9 +226,13 @@ export const NavigatioMenuList = ({navigation}) => {
                      style={CustomStyles('navigation_menu_item')}
                 >New Estate Registration</Text>
                 </TouchableOpacity>
-                <Text
-                     style={CustomStyles('navigation_menu_item')}
-                >Add Occupant</Text>
+                <TouchableOpacity 
+                    onPress={()=>navigation.navigate('AddOccupant')}
+                >
+                    <Text
+                        style={CustomStyles('navigation_menu_item')}
+                    >Add Occupant</Text>
+                </TouchableOpacity>
                 <Text
                      style={CustomStyles('navigation_menu_item')}
                 >Add Domestic Staff</Text>
@@ -273,26 +277,23 @@ export const NavBarRightMenu = ({navigation}) => {
 
 
 export const get_login_user_information = async  () => {
-    const first_name = await AsyncStorage.getItem('first_name');
-    const last_name = await AsyncStorage.getItem('last_name');
-    const api_token = await AsyncStorage.getItem('api_token');
-    console.log('user info ...');
-    return {
-        first_name,
-        last_name,
-        api_token
-    }
+    const user_information = await AsyncStorage.getItem('user_information');
+    console.log('----user information- --');
+    console.log(user_information);
+    return JSON.parse(user_information);
 }
 
 export const OverView = ({navigation,route}) => {
     const [firstName,setFirstName] = useState(' ');
     useEffect(()=>{
-        get_login_user_information().then(res=>{
-            setFirstName(res.first_name);
+        get_login_user_information().then(({$_first_name})=>{
+            setFirstName($_first_name);
         }).catch(err =>{
             console.log(err);
         });
-    });
+    },[
+        firstName
+    ]);
     return(
         <View style={CustomStyles('main_container_with_bottom_nav')}>
             <View style={CustomStyles('body_container_with_bottom_nav')}>
@@ -645,30 +646,30 @@ export const VerificationSuccessful = ({navigation}) => (
 
 export const ConfirmationScreen = ({navigation,route}) => (
     <View style={CustomStyles('body_container')}>
-            <View style={CustomStyles('section_container')}>
-                <Text style={CustomStyles('header_text')}>{route.params.title}</Text>
+        <View style={CustomStyles('section_container')}>
+            <Text style={CustomStyles('header_text')}>{route.params.title}</Text>
+        </View>
+        <View style={CustomStyles('section_container')}>
+            <View style={CustomStyles('image_container')}>
+                <Image 
+                    style={CustomStyles('image_file')}
+                    source={require('../assets/images/illustration.png')}
+                />
             </View>
-            <View style={CustomStyles('section_container')}>
-                <View style={CustomStyles('image_container')}>
-                    <Image 
-                        style={CustomStyles('image_file')}
-                        source={require('../assets/images/illustration.png')}
-                    />
+        </View>
+        <View style={CustomStyles('section_container')}>
+            <Text style={CustomStyles('p_text')}>
+            {route.params.body ? route.params.body : 'You have successfully reset your password. Log in and continue the good work you already started.'} 
+            </Text>
+        </View>
+        <View style={CustomStyles('section_container')}>
+            <TouchableOpacity style={CustomStyles('form_group')}
+                onPress={()=>navigation.navigate(route.params.screen)}
+            >
+                <View style={CustomStyles('submit_button')}>
+                    <Text style={CustomStyles('submit_button_text')}>{route.params.button_text}</Text>
                 </View>
-            </View>
-            <View style={CustomStyles('section_container')}>
-                <Text style={CustomStyles('p_text')}>
-                {route.params.body ? route.params.body : 'You have successfully reset your password. Log in and continue the good work you already started.'} 
-                </Text>
-            </View>
-            <View style={CustomStyles('section_container')}>
-                <TouchableOpacity style={CustomStyles('form_group')}
-                    onPress={()=>navigation.navigate(route.params.screen)}
-                >
-                    <View style={CustomStyles('submit_button')}>
-                        <Text style={CustomStyles('submit_button_text')}>{route.params.button_text}</Text>
-                    </View>
-                </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
+        </View>
     </View>
 )

@@ -31,21 +31,18 @@ export const processGetRequestWithToken = async (url) => {
      * --token
      * http://127.0.0.1:8000/api/users/resident_register?email=olamilekan_lokoso@gmail.com&firstname=Olaoluwa&surname=Adewale&password=password&phone=08140812969
      */
-    try{
-        try {
-            const api_token = await AsyncStorage.getItem('api_token');
-            console.log('......token......');
-            console.log(api_token);
-            const res = await axios.get(url, {
-                headers:{Authorization : `Bearer ${api_token}`}
-            });
-            return res.data.response;
-        }
-        catch (error) {
-             console.log(error);
-        }
-    }catch(err){
-        console(err);
+    try {
+        let user_information = await AsyncStorage.getItem('user_information');
+        console.log('......token......');
+        const res = await axios.get(url, {
+            headers:{Authorization : `Bearer ${JSON.parse(user_information).$_api_token}`}
+        });
+        console.log('........ response ..........');
+        return res.data.response;
+    }
+    catch (error) {
+         console.log(error);
+         return error;
     }
 }
 
@@ -56,21 +53,16 @@ export const processPostRequestWithToken = async (url,requestData) => {
      * --token
      * http://127.0.0.1:8000/api/users/resident_register?email=olamilekan_lokoso@gmail.com&firstname=Olaoluwa&surname=Adewale&password=password&phone=08140812969
      */
-    try{
-        try {
-            const api_token = await AsyncStorage.getItem('api_token');
-            console.log('......token......');
-            console.log(api_token);
-            const res = await axios.post(url, requestData,{
-                headers:{Authorization : `Bearer ${api_token}`}
-            });
-            return res.data.response;
-        }
-        catch (error) {
-             console.log(error);
-        }
-    }catch(err){
-        console(err);
+    try {
+        const user_information = await AsyncStorage.getItem('user_information');
+        console.log(requestData);
+        const res = await axios.post(url, requestData,{
+            headers:{Authorization : `Bearer ${JSON.parse(user_information).$_api_token}`}
+        });
+        return res.data.response;
+    }
+    catch (error) {
+         console.log(error);
     }
 }
 
@@ -84,16 +76,23 @@ export const ProcessLoginRequest = async (url,requestData) => {
     console.log(url);
     try{
         try {
-            const res = await axios.post(url, requestData);
+            const res = await axios.post(url,requestData);
+            console.log(res);
             if(res.data.response.code === 200){
-                await AsyncStorage.setItem('first_name', res.data.response.user.firstname);
-                await AsyncStorage.setItem('last_name', res.data.response.user.surname);
-                await AsyncStorage.setItem('api_token', res.data.response.user.api_token);
+                let user_information = {
+                    $_first_name : res.data.response.user.firstname,
+                    $_last_name : res.data.response.user.surname,
+                    $_api_token : res.data.response.user.api_token,
+                    $_email_address: res.data.response.user.email,
+                    $_profile_image : res.data.response.user.user_photo
+                }
+                await AsyncStorage.setItem('user_information',JSON.stringify(user_information));
             }
             return res.data.response;
         }
         catch (error) {
-            return error;
+            console.log('--- Axios has error ---');
+            console.log(error);
         }
     }catch(err){
         console(err);
@@ -109,4 +108,11 @@ export const TextFieldRules = (type,value) => {
             return false;
  
     }
+}
+
+export const getLocalStorageInformation = async () => {
+    console.log('... getting the information ...');
+    let user_information = await AsyncStorage.getItem('user_information');
+    console.log(user_information);
+    return JSON.parse(user_information);
 }
