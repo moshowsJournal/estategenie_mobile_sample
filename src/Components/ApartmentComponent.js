@@ -1,6 +1,6 @@
 import React,{useState,useEffect} from 'react';
 import {Text,View,TouchableOpacity,ScrollView,Image,TextInput,Picker,Switch} from 'react-native';
-import {processGetRequestWithToken,processPostRequestWithToken} from '../functions/HomeFunction';
+import {processGetRequestWithToken,processPostRequestWithToken,processFormDataRequestWithToken} from '../functions/HomeFunction';
 import { baseUrl } from './environment_variable';
 import {CustomStyles,inline_style} from './Styles';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -167,7 +167,7 @@ export const AddOccupant = ({navigation,route}) =>{
                         {
                             image_is_set ? <Image 
                             source={require('../assets/images/green-check-mark.png')}
-                            style={{width:30,height:30,borderRadius:50}}
+                            style={{width:30,height:30,borderRadius:50,bottom:5}}
                         /> : <Image 
                         source={require('../assets/images/camera.png')}
                     /> 
@@ -175,24 +175,22 @@ export const AddOccupant = ({navigation,route}) =>{
                             
                         </View>
                     </TouchableOpacity>
-                    {console.log(route)}
                     <TouchableOpacity 
                         onPress={()=>{
                             setProcessing(true);
-                            let requestData = {
-                                firstname : first_name,
-                                surname : last_name,
-                                phone : phone_number,
-                                association_type : occupant_type,
-                                apartment_id : route.params.apartment_id,
-                                estate_id : route.params.estate_id,
-                                building_unit_id : route.params.building_unit_id,
-                                profile_image : occupant_image,
-                                occupant_username : route.params.occupant_username
-                            }
+                            let formData = new FormData();
+                            formData.append('firstname',first_name);
+                            formData.append('surname',last_name);
+                            formData.append('phone',phone_number);
+                            formData.append('association_type',occupant_type);
+                            formData.append('apartment_id',route.params.apartment_id);
+                            formData.append('estate_id',route.params.estate_id);
+                            formData.append('building_unit_id',route.params.building_unit_id);
+                            formData.append('profile_image', {uri: occupant_image.path, name: 'image.jpg', type: occupant_image.mime});
+                            formData.append('occupant_username',route.params.occupant_username);
                             let endpoint = route.params.first_name !== undefined ? '/api/users/edit_occupant_details' 
                             : '/api/users/add_occupant';
-                            processPostRequestWithToken(`${baseUrl}${endpoint}`,requestData).then(res=>{
+                            processFormDataRequestWithToken(`${baseUrl}${endpoint}`,formData).then(res=>{
                                 console.log(res);
                                 setProcessing(false);
                                 if(res.code === 200 && (route.params.first_name === undefined)){

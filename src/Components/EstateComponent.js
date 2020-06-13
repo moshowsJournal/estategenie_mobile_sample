@@ -136,7 +136,7 @@ export const ModalComponent = ({showModal,manageShowModalState,navigation,params
                                 style={CustomStyles('p_text')}
                                 onPress={()=>manageShowModalState(false)}
                             >
-                                Cancel Validate
+                                Cancel
                             </Text>
                         )}
                     </View>
@@ -160,7 +160,8 @@ export const ApartmentSelectedConfirmation = ({navigation}) => (
                     </View>
                     <View style={CustomStyles('section_container')}>
                         <Text style={CustomStyles('p_text')}>
-                        Access to an open online Estate Management platform where anyone, anywhere, can sign up and begin living their best lives right away. Have Fun!
+                        Access to an open online Estate Management platform where anyone, anywhere, 
+                        can sign up and begin living their best lives right away. Have Fun!
                         </Text>
                     </View>
                     <View style={CustomStyles('section_container')}>

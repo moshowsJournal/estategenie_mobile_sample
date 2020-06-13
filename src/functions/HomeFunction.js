@@ -51,7 +51,8 @@ export const processPostRequestWithToken = async (url,requestData) => {
      * --url,
      * --data,
      * --token
-     * http://127.0.0.1:8000/api/users/resident_register?email=olamilekan_lokoso@gmail.com&firstname=Olaoluwa&surname=Adewale&password=password&phone=08140812969
+     * http://127.0.0.1:8000/api/users/resident_register?email=olamilekan_lokoso@gmail.com&
+     * firstname=Olaoluwa&surname=Adewale&password=password&phone=08140812969
      */
     try {
         const user_information = await AsyncStorage.getItem('user_information');
@@ -66,12 +67,37 @@ export const processPostRequestWithToken = async (url,requestData) => {
     }
 }
 
+export const processFormDataRequestWithToken = async (url,requestData) => {
+    /**
+     * --url,
+     * --data,
+     * --token
+     * http://127.0.0.1:8000/api/users/resident_register?email=olamilekan_lokoso@gmail.com&
+     * firstname=Olaoluwa&surname=Adewale&password=password&phone=08140812969
+     */
+    try {
+        const user_information = await AsyncStorage.getItem('user_information');
+        console.log(requestData);
+        const res = await axios.post(url, requestData,{
+            headers:{
+                Authorization : `Bearer ${JSON.parse(user_information).$_api_token}`,
+                'Content-Type' : 'multipart/form-data'
+            }
+        });
+        return res.data.response;
+    }
+    catch (error) {
+         console.log(error);
+    }
+}
+
 export const ProcessLoginRequest = async (url,requestData) => {
     /**
      * --url,
      * --data,
      * --token
-     * http://127.0.0.1:8000/api/users/resident_register?email=olamilekan_lokoso@gmail.com&firstname=Olaoluwa&surname=Adewale&password=password&phone=08140812969
+     * http://127.0.0.1:8000/api/users/resident_register?email=olamilekan_lokoso@gmail.com
+     * &firstname=Olaoluwa&surname=Adewale&password=password&phone=08140812969
      */
     console.log(url);
     try{
@@ -84,7 +110,8 @@ export const ProcessLoginRequest = async (url,requestData) => {
                     $_last_name : res.data.response.user.surname,
                     $_api_token : res.data.response.user.api_token,
                     $_email_address: res.data.response.user.email,
-                    $_profile_image : res.data.response.user.user_photo
+                    $_profile_image : res.data.response.user.user_photo,
+                    $_phone : res.data.response.user.phone
                 }
                 await AsyncStorage.setItem('user_information',JSON.stringify(user_information));
             }
