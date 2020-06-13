@@ -31,8 +31,6 @@ export const MyService = ({navigation,route}) => {
                                 <Text style={inline_style.counter_text}>Pending Payment</Text>
                             </View>
                         </TouchableOpacity>
-                    </View>
-                    <View style={CustomStyles('section_container')}>
                         <TouchableOpacity style={CustomStyles('horizontal_card')}
                         
                         >
@@ -46,8 +44,6 @@ export const MyService = ({navigation,route}) => {
                                 <Text style={inline_style.counter_text}>Available</Text>
                             </View>
                         </TouchableOpacity>
-                    </View>
-                    <View style={CustomStyles('section_container')}>
                         <TouchableOpacity style={CustomStyles('horizontal_card')}
                         
                         >
@@ -138,7 +134,7 @@ export const InvoicesList = ({navigation,route}) => {
                     
                 </ScrollView>
             </View>
-            <ModalComponent showModal={showModal} manageShowModalState={manageShowModalState} navigation={navigation} params={{}} message="Please be informed that you will be charged an additional ₦15.00 as the payment processing fee. The total amount to pay is: ₦40,015.00" modal_title="Alert!" endpoint="/api/users/principal_chooses_apartment" navigate_to="ConfirmationScreen"route_info={{title:'Transaction Successful!',body:'This transaction has been authorised! Your payment for Power Outage is Successful!',screen:'MyService',button_text:'Continue'}}/>
+            <ModalComponent showModal={showModal} manageShowModalState={manageShowModalState} navigation={navigation} params={{}} message="Please be informed that you will be charged an additional ₦15.00 as the payment processing fee. The total amount to pay is: ₦40,015.00" modal_title="Alert!" endpoint="/api/users/principal_chooses_apartment" navigate_to="ConfirmationScreen" route_info={{title:'Transaction Successful!',body:'This transaction has been authorised! Your payment for Power Outage is Successful!',screen:'MyService',button_text:'Continue'}}/>
             <View style={{height:'15%',backgroundColor:'white'}}>
                 <BottomTabNavigation navigation={navigation} route={route}/>
             </View>

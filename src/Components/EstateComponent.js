@@ -113,13 +113,9 @@ export const ModalComponent = ({showModal,manageShowModalState,navigation,params
                             onPress={()=>{
                                 let requestData = {
                                     ...params
-                                    // apartment_id,
-                                    // building_unit_id,
-                                    // estate_id 
                                 }
-                                setProcessing(false);
-                                manageShowModalState(false)
-                                return navigation.navigate(navigate_to,route_info);
+                                setProcessing(true);
+                               // return navigation.navigate(navigate_to,route_info);
                                processPostRequestWithToken(`${baseUrl}${endpoint}`,requestData).then(res => {
                                    console.log(res);
                                    if(res.code === 200){
@@ -275,7 +271,6 @@ export const BottomTabNavigation = ({route,navigation}) => {
                         <Text style={CustomStyles('clicked_bottom_nav_text')}>Apartments</Text> : 
                         <Text style={CustomStyles('bottom_nav_text')}>Apartments</Text>}
                 </TouchableOpacity>
-                {console.log(`--The Route: ${route.name.includes('Service')}---`)}
                 <TouchableOpacity style={CustomStyles('nav_item')}
                     onPress={()=> navigation.navigate('MyService')}
                 >

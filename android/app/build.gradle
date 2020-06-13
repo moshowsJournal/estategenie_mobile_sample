@@ -131,6 +131,7 @@ android {
         applicationId "com.estate_genie"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+        vectorDrawables.useSupportLibrary = true
         versionCode 1
         versionName "1.0"
     }
@@ -179,6 +180,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-image-crop-picker')
     implementation project(':react-native-linear-gradient')
     implementation project(':@react-native-community_async-storage')
     implementation project(':react-native-vector-icons')

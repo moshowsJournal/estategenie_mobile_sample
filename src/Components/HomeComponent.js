@@ -13,6 +13,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer,NavigationActions } from '@react-navigation/native';
 import {FindYourEstate,UseEstateCodeNavItem,FindByEstateCode} from './EstateComponent';
 import AsyncStorage from '@react-native-community/async-storage';
+import {ModalComponent} from './EstateComponent';
 
 export const LogoSection = () => (
     <View>
@@ -208,10 +209,16 @@ export const ForgotPassword = ({navigation}) => {
     )
 }
 export const NavigatioMenuList = ({navigation,route}) => {
+    const [showModal,manageShowModalState] = useState(false);
     return(
         <View 
             style={CustomStyles('navigation_menu_list')}
         >
+            {
+                route.name === 'OccupantDetails' && <ModalComponent showModal={showModal} manageShowModalState={manageShowModalState} navigation={navigation} params={{apartment_id:route.params.apartment_id,occupant_username:route.params.occupant_username}} message={`You are about to remove ${route.params.first_name} ${route.params.surname} from your Apartment.`} modal_title="Remove Occupant?!" 
+                endpoint="/api/users/remove_occupant_from_apartment" navigate_to="ConfirmationScreen" route_info={{title:'Occupant Removed!',body:`${route.params.first_name} ${route.params.surname} has been successfully removed from your apartment.`,screen:'MyApartments',button_text:'Continue'}} />
+            }
+
             <View>
                 <Text
                     style={CustomStyles('navigation_menu_item')}
@@ -229,7 +236,7 @@ export const NavigatioMenuList = ({navigation,route}) => {
                 {
                     route.name === 'ApartmentDetails' && <TouchableOpacity 
                     onPress={()=>navigation.navigate('AddOccupant',{
-                        ... route.params
+                        ... route.params,route_name:'Add Occupant'
                     })}
                 >
                     <Text
@@ -237,9 +244,28 @@ export const NavigatioMenuList = ({navigation,route}) => {
                     >Add Occupant</Text>
                 </TouchableOpacity>
                 }
-                {/* <Text
-                     style={CustomStyles('navigation_menu_item')}
-                >Add Domestic Staff</Text> */}
+                {
+                    route.name === 'OccupantDetails' && <TouchableOpacity 
+                    onPress={()=>navigation.navigate('AddOccupant',{
+                        ... route.params,route_name:'Edit Occupant'
+                    })}
+                >
+                    <Text
+                        style={CustomStyles('navigation_menu_item')}
+                    >Edit Occupant</Text>
+                </TouchableOpacity>
+                }
+
+{
+                    route.name === 'OccupantDetails' && <TouchableOpacity 
+                    onPress={()=>manageShowModalState(true)}
+                    >
+                    <Text
+                        style={CustomStyles('navigation_menu_item')}
+                    >Remove Occupant</Text>
+                </TouchableOpacity>
+                }
+
                 <Text
                      style={CustomStyles('navigation_menu_item')}
                 >Book Visitor</Text>

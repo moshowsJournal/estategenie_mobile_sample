@@ -158,7 +158,7 @@ class App extends Component{
                                   fontWeight:'bold',
                                   fontSize:18
                               },
-                              headerTitle: route.params.full_name,
+                              headerTitle: `${route.params.first_name} ${route.params.surname}`,
                               headerRight : () => (
                                 <NavBarRightMenu navigation={navigation} route={route} />
                               ),
@@ -169,7 +169,7 @@ class App extends Component{
                         <Stack.Screen 
                             name="AddOccupant"
                             component={AddOccupant}
-                            options={({navigation})=>{
+                            options={({navigation,route})=>{
                               return{
                                 headerTitleAlign:'left',
                                 headerStyle:{
@@ -180,7 +180,7 @@ class App extends Component{
                                     fontWeight:'bold',
                                     fontSize:18
                                 },
-                                headerTitle: "Add Occupant",
+                                headerTitle: route.params.route_name,
                                 headerRight : () => (
                                   <NavBarRightMenu navigation={navigation} route={route}/>
                                 ),

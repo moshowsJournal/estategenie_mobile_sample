@@ -40,6 +40,8 @@ target 'estate_genie' do
 
   pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
 
+  pod 'RNImageCropPicker', :path => '../node_modules/react-native-image-crop-picker'
+
   target 'estate_genieTests' do
     inherit! :search_paths
     # Pods for testing

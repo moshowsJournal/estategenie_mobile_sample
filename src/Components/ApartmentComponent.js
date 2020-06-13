@@ -6,6 +6,7 @@ import {CustomStyles,inline_style} from './Styles';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {BottomTabNavigation} from './EstateComponent';
 import moment from 'moment';
+import ImagePicker from 'react-native-image-crop-picker';
 
 
 export const MyApartments = ({navigation,route}) =>{
@@ -70,13 +71,18 @@ export const MyApartments = ({navigation,route}) =>{
 }
 
 export const AddOccupant = ({navigation,route}) =>{
+    let init_first_name = route.params.first_name !== undefined ? route.params.first_name : '';
+    let init_surname = route.params.surname !== undefined ? route.params.surname : '';
+    let init_association_type = route.params.association_type !== undefined ? route.params.association_type : '';
+    let init_phone = route.params.phone_number !== undefined ? route.params.phone_number : '';
     const [hideBottonNav,setHideBottomNav] = useState(false);
-    const [first_name,setFirstName] = useState('');
-    const [last_name,setLastName] = useState('');
-    const [occupant_type,setOccupantType] = useState('');
-    const [phone_number,setPhoneNumber] = useState('');
-    const [occupant_image,setOccupantImage] = useState('');
+    const [first_name,setFirstName] = useState(init_first_name);
+    const [last_name,setLastName] = useState(init_surname);
+    const [occupant_type,setOccupantType] = useState(init_association_type);
+    const [phone_number,setPhoneNumber] = useState(init_phone);
+    const [occupant_image,setOccupantImage] = useState();
     const [processing,setProcessing] = useState(false);
+    const [image_is_set,setImageStatus] = useState(false);
     return(
         <View style={inline_style.main_container_with_bottom_nav}>
             <KeyboardAwareScrollView style={inline_style.body_container_with_bottom_nav}>
@@ -137,7 +143,18 @@ export const AddOccupant = ({navigation,route}) =>{
                             keyboardType="numeric"
                         />
                     </View>
-                    <View style={inline_style.form_group}>
+                    <TouchableOpacity style={inline_style.form_group}
+                    onPress={()=>{
+                        ImagePicker.openPicker({
+                            width: 300,
+                            height: 400,
+                            cropping: true
+                          }).then(image => {
+                            setOccupantImage(image);
+                            setImageStatus(true);
+                          });
+                    }}
+                    >
                         <Text style={inline_style.label_text}>Occupant Image</Text>
                         <Picker 
                             onFocus={()=> setHideBottomNav(true)}
@@ -147,11 +164,17 @@ export const AddOccupant = ({navigation,route}) =>{
                             placeholderTextColor="#e0cdcd"
                         />
                         <View style={{position:'absolute',right:20,top:40}}>
-                            <Image 
-                                source={require('../assets/images/camera.png')}
-                            />
+                        {
+                            image_is_set ? <Image 
+                            source={require('../assets/images/green-check-mark.png')}
+                            style={{width:30,height:30,borderRadius:50}}
+                        /> : <Image 
+                        source={require('../assets/images/camera.png')}
+                    /> 
+                        }
+                            
                         </View>
-                    </View>
+                    </TouchableOpacity>
                     {console.log(route)}
                     <TouchableOpacity 
                         onPress={()=>{
@@ -162,16 +185,28 @@ export const AddOccupant = ({navigation,route}) =>{
                                 phone : phone_number,
                                 association_type : occupant_type,
                                 apartment_id : route.params.apartment_id,
-                                estate_id : route.params.estate_code,
-                                building_unit_id : route.params.building_unit_id
+                                estate_id : route.params.estate_id,
+                                building_unit_id : route.params.building_unit_id,
+                                profile_image : occupant_image,
+                                occupant_username : route.params.occupant_username
                             }
-                            processPostRequestWithToken(`${baseUrl}/api/users/add_occupant`,requestData).then(res=>{
+                            let endpoint = route.params.first_name !== undefined ? '/api/users/edit_occupant_details' 
+                            : '/api/users/add_occupant';
+                            processPostRequestWithToken(`${baseUrl}${endpoint}`,requestData).then(res=>{
                                 console.log(res);
                                 setProcessing(false);
-                                if(res.code === 200){
+                                if(res.code === 200 && (route.params.first_name === undefined)){
                                     navigation.navigate('ConfirmationScreen',{
                                         title : 'Occupant Added!',
                                         body : `You have successfully added a new Occupant: ${first_name} ${last_name} as ${occupant_type}.`,
+                                        button_text : 'Go to Apartments',
+                                        screen : 'MyApartments'
+                                    });
+                                }
+                                if(res.code === 200 && (route.params.first_name !== undefined)){
+                                    navigation.navigate('ConfirmationScreen',{
+                                        title : 'Occupant Edited!',
+                                        body : `You have successfully edited Occupant: ${first_name} ${last_name}'s record`,
                                         button_text : 'Go to Apartments',
                                         screen : 'MyApartments'
                                     });
@@ -187,7 +222,11 @@ export const AddOccupant = ({navigation,route}) =>{
                         <View
                             style={CustomStyles('submit_button')}
                         >
-                            <Text style={CustomStyles('submit_button_text')}>{ processing ? 'Please Wait ...' : 'Add Occupant'}</Text>
+                            {
+                            route.params.first_name !== undefined ? <Text style={CustomStyles('submit_button_text')}>{ processing ? 'Please Wait ...' : 'Edit Occupant'}</Text> : <Text style={CustomStyles('submit_button_text')}>{ processing ? 'Please Wait ...' : 'Add Occupant'}</Text>
+                        }
+                            
+
                         </View>
                     </TouchableOpacity>
                 </View>
@@ -251,18 +290,24 @@ export const ApartmentDetails = ({navigation,route})=>{
                         >
                                 <Text style={CustomStyles('horizontal_card_header')}>No Record Found :( </Text>
                             </View> : 
-                        occupants.map((occupant,index) => {
+                        occupants.filter(occupant=>occupant.status !== 'removed').map((occupant,index) => {
                             return(
                                 <TouchableOpacity key={index} style={CustomStyles('horizontal_card_with_image')}
                                     onPress={()=>{
                                         navigation.navigate('OccupantDetails',{
-                                            full_name : `${occupant.user.firstname} ${occupant.user.surname}`,
+                                            first_name : `${occupant.user.firstname}`,
+                                            surname : `${occupant.user.surname}`,
                                             association_type : `${occupant.association_type}`,
                                             phone_number : occupant.user.phone,
                                             date_created : moment(occupant.created_date).format('MMMM Do YYYY'),
-                                            profile_image : occupant.user.user_photo
+                                            profile_image : occupant.user.user_photo,
+                                            apartment_id : occupant.apartment_id,
+                                            building_unit_id : occupant.building_unit_id,
+                                            estate_id : occupant.estate_id,
+                                            occupant_username : occupant.occupant_username
                                         });
                                     }}
+                                    disabled={occupant.association_type === 'PRINCIPAL-RESIDENT' ? true : false}
                                 >
                                     <View style={inline_style.horizontal_card_img_container}>
                                         <Image 
@@ -310,7 +355,7 @@ export const OccupantDetails = ({navigation,route})=> {
                     </View>
                     <View style={inline_style.section_container_with_border_line}> 
                         <View style={{marginBottom:10,marginTop:20}}>
-                            <Text style={inline_style.horizontal_card_header}>{route.params.full_name}</Text>
+                            <Text style={inline_style.horizontal_card_header}>{route.params.first_name} {route.params.surname}</Text>
                             <Text style={inline_style.horizontal_card_text}>{route.params.association_type}</Text>
                         </View>
                         <View style={{marginBottom:10}}>
