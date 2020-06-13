@@ -296,7 +296,6 @@ export const OccupantDetails = ({navigation,route})=> {
     },[
 
     ]);
-    console.log(baseUrl+route.params.profile_image);
     return(
         <View style={CustomStyles('main_container_with_bottom_nav')}>
             <View style={CustomStyles('body_container_with_bottom_nav')}>

@@ -75,8 +75,30 @@ export const inline_style = {
         flex:5,
         justifyContent:'center'
     },
+    green_card_text : {
+        color:'#FFFFFF'
+    },
+    bills_payment_logo : {
+        color:'#FFFFFF',
+        backgroundColor:'blue',
+        borderRadius:50,
+        width:30,
+        padding:5,
+        fontWeight:'bold',
+        textAlign:'center',
+        marginBottom:10
+    },
+    green_card_header : {
+        color:'#FFFFFF',
+        fontSize:17,
+        marginBottom:5
+    },
+    green_card : {
+        padding:15,
+        borderRadius:10
+    },
     horizontal_card_text:{
-        fontSize:15,
+        fontSize:14,
         justifyContent:'center',
         color:'#737A91',
         marginBottom:5
@@ -85,6 +107,48 @@ export const inline_style = {
         fontFamily: 'Galano Grotesque',
         fontSize: 14,
         color: '#737A91',
+        marginBottom:5,
+        fontWeight:'bold',
+        width:'100%'
+    },
+    counter_container : {
+        marginTop:15,
+        flexDirection:'row',
+        backgroundColor: '#eaedf1',
+        width:200,
+        borderRadius:20,
+        marginBottom:10
+    },
+    card_outer_header : {fontWeight:'bold',fontSize:15,marginBottom:10,marginTop:5},
+    card_icon:{
+        fontSize:30,
+        color:'green' 
+    },
+    invoice_date : {
+        fontSize:11
+    },
+    invoice_danger_date : {
+        fontSize:11,
+        color:'red'
+    },
+    counter : {
+        color:'#FFFFFF',
+        backgroundColor:'blue',
+        borderRadius:50,
+        padding:12,
+        fontWeight:'bold',
+        marginRight:10,
+        width:50,
+        textAlign:'center'
+    },
+    counter_text : {
+        alignSelf:'center',
+        color:'#737A91'
+    },
+    service_card_header:{
+        fontFamily: 'Galano Grotesque',
+        fontSize: 17,
+        color: 'black',
         marginBottom:5,
         fontWeight:'bold',
         width:'100%'

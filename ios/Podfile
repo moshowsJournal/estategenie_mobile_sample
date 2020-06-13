@@ -38,6 +38,8 @@ target 'estate_genie' do
 
   pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
 
+  pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
+
   target 'estate_genieTests' do
     inherit! :search_paths
     # Pods for testing

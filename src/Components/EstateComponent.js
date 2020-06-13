@@ -15,6 +15,7 @@ export const FindYourEstate = ({navigation,route}) => {
     const [countryCodes,setCountryCodes] = useState([]);
     useEffect(()=>{
         processGetRequestWithToken(`${baseUrl}/api/users/get_all_estates`).then(res =>{
+            console.log(res);
             if(JSON.stringify(res).includes(401)) return navigation.navigate('Login');
             setEstate(Object.values(res.estates));
             setCountryCodes(Object.keys(res.estates));
@@ -51,7 +52,7 @@ export const FindYourEstate = ({navigation,route}) => {
                         countryCodes.map((country_code,index) =>{
                             return(
                                 <View key={index}>
-                                    <Text style={{fontWeight:'bold',fontSize:15}}>{country_code}</Text>
+                                    <Text style={inline_style.card_outer_header}>{country_code}</Text>
                                     {
                                         estates[index].map((estate,key)=>{
                                             return(
@@ -82,7 +83,7 @@ export const FindYourEstate = ({navigation,route}) => {
         </View>
     )
 }
-export const ModalComponent = ({showModal,manageShowModalState,navigation,apartment_id,building_unit_id,estate_id}) => {
+export const ModalComponent = ({showModal,manageShowModalState,navigation,params,message,modal_title,endpoint,navigate_to,route_info}) => {
     const [processing,setProcessing] = useState(false);
     return(
         <Modal
@@ -92,7 +93,7 @@ export const ModalComponent = ({showModal,manageShowModalState,navigation,apartm
         >
             <View style={{justifyContent:'center',marginTop:'50%'}}>
                     <View style={CustomStyles('section_container')}>
-                        <Text style={CustomStyles('header_text')}>Validate Apartment!</Text>
+                        <Text style={CustomStyles('header_text')}>{modal_title}</Text>
                     </View>
                     <View style={inline_style.image_section_container}>
                         <View style={CustomStyles('image_container')}>
@@ -104,23 +105,26 @@ export const ModalComponent = ({showModal,manageShowModalState,navigation,apartm
                     </View>
                     <View style={CustomStyles('section_container')}>
                         <Text style={CustomStyles('p_text')}>
-                            You are about to validate that you are the principal resident of this Apartment.
+                            {message}
                         </Text>
                     </View>
                     <View style={CustomStyles('section_container')}>
                         <TouchableOpacity style={CustomStyles('form_group')}
                             onPress={()=>{
                                 let requestData = {
-                                    apartment_id,
-                                    building_unit_id,
-                                    estate_id 
+                                    ...params
+                                    // apartment_id,
+                                    // building_unit_id,
+                                    // estate_id 
                                 }
-                                setProcessing(true);
-                               processPostRequestWithToken(`${baseUrl}/api/users/principal_chooses_apartment`,requestData).then(res => {
+                                setProcessing(false);
+                                manageShowModalState(false)
+                                return navigation.navigate(navigate_to,route_info);
+                               processPostRequestWithToken(`${baseUrl}${endpoint}`,requestData).then(res => {
                                    console.log(res);
                                    if(res.code === 200){
                                         manageShowModalState(false)
-                                       return navigation.navigate('ApartmentSelectedConfirmation');
+                                       return navigation.navigate(navigate_to,route_info);
                                    }
                                    return setProcessing(false);
                                });
@@ -234,7 +238,8 @@ export const ApartmentsInEstate = ({navigation,route}) => {
                     
                 </ScrollView>
             </View>
-            <ModalComponent showModal={showModal} manageShowModalState={manageShowModalState} navigation={navigation} apartment_id={selectedApartmentId} building_unit_id={selectedBuildingId} estate_id={route.params.estate_id}/>
+            <ModalComponent showModal={showModal} manageShowModalState={manageShowModalState} navigation={navigation} params={{apartment_id:selectedApartmentId,building_unit_id:selectedBuildingId,estate_id:route.params.estate_id}} message="You are about to validate that you are the principal resident of this Apartment." modal_title="Validate Apartment!" 
+            endpoint="/api/users/principal_chooses_apartment" navigate_to="ApartmentSelectedConfirmation" route_info={{}} />
             <View style={{height:'15%',backgroundColor:'white'}}>
                 <BottomTabNavigation navigation={navigation} route={route}/>
             </View>
@@ -270,13 +275,15 @@ export const BottomTabNavigation = ({route,navigation}) => {
                         <Text style={CustomStyles('clicked_bottom_nav_text')}>Apartments</Text> : 
                         <Text style={CustomStyles('bottom_nav_text')}>Apartments</Text>}
                 </TouchableOpacity>
-
-                <TouchableOpacity style={CustomStyles('nav_item')}>
-                    {route === 'service' ? 
+                {console.log(`--The Route: ${route.name.includes('Service')}---`)}
+                <TouchableOpacity style={CustomStyles('nav_item')}
+                    onPress={()=> navigation.navigate('MyService')}
+                >
+                    {route.name.includes('service') || route.name.includes('Service') || route.name.includes('Invoice') ? 
                         <MaterialIcons name="work" style={CustomStyles('clicked_bottom_nav_icons')}/> : 
                         <MaterialIcons name="work" style={CustomStyles('bottom_nav_icons')}/>}
 
-                    {route === 'service' ? 
+                    {route.name.includes('service') || route.name.includes('Service') || route.name.includes('Invoice')? 
                         <Text style={CustomStyles('clicked_bottom_nav_text')}>Service</Text> : 
                         <Text style={CustomStyles('bottom_nav_text')}>Service</Text>}
                 </TouchableOpacity>

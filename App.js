@@ -31,6 +31,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {FindYourEstate,UseEstateCodeNavItem,FindByEstateCode,ApartmentsInEstate,ApartmentSelectedConfirmation} from './src/Components/EstateComponent';
 import {MyProfile, EditProfile,UpdatePassword} from './src/Components/ProfileComponent';
 import {MyApartments, ApartmentDetails, AddOccupant,OccupantDetails} from './src/Components/ApartmentComponent';
+import {MyService,InvoicesList} from './src/Components/ServiceComponent';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { CustomStyles } from './src/Components/Styles';
 
@@ -49,7 +50,11 @@ class App extends Component{
                 >
                       
                     
-
+                      
+                      {/* <Stack.Screen 
+                          name="Login"
+                          component={Login}
+                      /> */}
                       <Stack.Screen
                           name="MyApartments"
                           component={MyApartments}
@@ -70,6 +75,52 @@ class App extends Component{
                             ),
                             }
                         }}
+                      />
+
+                      <Stack.Screen 
+                        name="InvoicesList"
+                        component={InvoicesList}
+                        options={({navigation,route})=>{
+                          return{
+                              headerTitleAlign:'left',
+                              headerStyle:{
+                                backgroundColor:'#FAFAFA'
+                              },
+                              headerTintColor : "black",
+                              headerTitleStyle:{
+                                  fontWeight:'bold',
+                                  fontSize:18
+                              },
+                              headerTitle: "My Services",
+                              headerRight : () => (
+                                <NavBarRightMenu navigation={navigation} route={route}/>
+                              ),
+                          }
+                        }}
+                        
+                      />
+
+                      <Stack.Screen 
+                          name="MyService"
+                          component={MyService}
+                          options={({navigation,route})=>{
+                            return{
+                                headerTitleAlign:'left',
+                                headerStyle:{
+                                  backgroundColor:'#FAFAFA'
+                                },
+                                headerTintColor : "black",
+                                headerTitleStyle:{
+                                    fontWeight:'bold',
+                                    fontSize:18
+                                },
+                                headerTitle: "My Services",
+                                headerRight : () => (
+                                  <NavBarRightMenu navigation={navigation} route={route}/>
+                                ),
+                            }
+                          }}
+                      
                       />
 
                       <Stack.Screen 
@@ -109,7 +160,7 @@ class App extends Component{
                               },
                               headerTitle: route.params.full_name,
                               headerRight : () => (
-                                <NavBarRightMenu navigation={navigation}/>
+                                <NavBarRightMenu navigation={navigation} route={route} />
                               ),
                             }
                           }}
@@ -131,7 +182,7 @@ class App extends Component{
                                 },
                                 headerTitle: "Add Occupant",
                                 headerRight : () => (
-                                  <NavBarRightMenu navigation={navigation}/>
+                                  <NavBarRightMenu navigation={navigation} route={route}/>
                                 ),
                               }
                             }}
@@ -157,10 +208,6 @@ class App extends Component{
                             ),
                             }
                         }}
-                      />
-                      <Stack.Screen 
-                          name="Login"
-                          component={Login}
                       />
                       <Stack.Screen
                           name="MyProfile"
@@ -223,7 +270,7 @@ class App extends Component{
                       <Stack.Screen
                           name="Overview"
                           component={OverView}
-                          options={ ({navigation}) => {
+                          options={ ({navigation,route}) => {
                             return{
                               headerTitleAlign:'left',
                               headerStyle:{
@@ -236,7 +283,7 @@ class App extends Component{
                               },
                               headerTitle: "Overview",
                               headerRight : () => (
-                                <NavBarRightMenu navigation={navigation}/>
+                                <NavBarRightMenu navigation={navigation} route={route}/>
                               ),
                             }
                         }}
