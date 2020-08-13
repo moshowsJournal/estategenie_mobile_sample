@@ -51,10 +51,10 @@ class App extends Component{
                       
                     
                       
-                      {/* <Stack.Screen 
+                      <Stack.Screen 
                           name="Login"
                           component={Login}
-                      /> */}
+                      />
                       <Stack.Screen
                           name="MyApartments"
                           component={MyApartments}
